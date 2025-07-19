@@ -1,0 +1,12 @@
+@font-face {
+  font-family: EBgaramond;
+  src: url('../src/assets/fonts/EBGaramond-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  
+}
+
+@import "tailwindcss";
+
+@theme {
+  --font-garamond : EBgaramond ,"sans-serif" ;
+}
