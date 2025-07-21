@@ -50,13 +50,13 @@ const Footer = () => {
 
   return (
     <div className="max-w-[95%] m-auto">
-      <footer className=" border-t-black border-t-1 pt-10">
-        <div className="flex flex-col gap-4 lg:justify-between lg:flex-row ">
-          <div><Menu title={menuItems[0].name} list={menuItems[0].list} /></div>
-          <div><Menu title={menuItems[1].name} list={menuItems[1].list}/></div>
+      <footer className=" border-0 border-t-black md:border-t-1 pt-10">
+        <div className="md:flex md:justify-between md:flex-row ">
+          <div><Menu title={menuItems[0].name} list={menuItems[0].list}  /></div>
+          <div><Menu title={menuItems[1].name} list={menuItems[1].list} /></div>
           <div><Menu title={menuItems[2].name} list={menuItems[2].list} /></div>
           <div>
-            <Menu title={menuItems[3].name} list={menuItems[3].list} />
+            <Menu title={menuItems[3].name} list={menuItems[3].list}  />
             <Social/>
           </div>
         </div>
