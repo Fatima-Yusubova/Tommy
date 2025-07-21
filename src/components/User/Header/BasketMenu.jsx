@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { IoClose } from "react-icons/io5";
 
 const BasketMenu = ({ bagOpen, setBagOpen }) => {
+
+   useEffect(() => {
+     if (bagOpen) {
+       document.body.style.overflow = "hidden"
+     } else {
+       document.body.style.overflow = "unset"
+     }
+    
+   }, [bagOpen])
   return (
     <>
       {bagOpen && (

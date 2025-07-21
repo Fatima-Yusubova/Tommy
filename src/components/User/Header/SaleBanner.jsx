@@ -2,7 +2,7 @@ import React from "react";
 
 const SaleBanner = () => {
   return (
-    <div className="bg-[#AE0029] text-white h-[400px] md:h-[258px] lg:h-auto lg:py-5 flex items-center justify-center">
+    <div className="bg-[#AE0029] text-white h-[500px] md:h-[400px] lg:h-auto lg:py-5 flex items-center justify-center">
       <div className="w-full max-w-6xl px-4">
         <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-8 xl:gap-12 text-center lg:text-left h-full">
           <h2 className="text-3xl md:text-4xl lg:text-2xl font-garamond italic lg:not-italic whitespace-nowrap leading-tight lg:leading-normal">
