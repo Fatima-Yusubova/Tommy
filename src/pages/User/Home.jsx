@@ -1,8 +1,15 @@
 import React from 'react'
+import HeroBanner from '../../components/User/Home/HeroBanner/HeroBanner'
+import Category from '../../components/User/Home/Category/Category'
+import Collections from '../../components/User/Home/Collections/Collections'
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <>
+    <HeroBanner/>
+    <Category/>
+    <Collections/>
+    </>
   )
 }
 
