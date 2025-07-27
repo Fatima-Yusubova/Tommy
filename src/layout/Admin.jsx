@@ -1,8 +1,13 @@
 import React from 'react'
+import Sidebar from '../components/Admin/Sidebar'
+import { Outlet } from 'react-router'
 
 const Admin = () => {
   return (
-    <div>Admin</div>
+    <div className='flex gap-5'>
+      <Sidebar/>
+      <Outlet/>
+    </div>
   )
 }
 
