@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 import { useAddCategoryMutation } from "../../../store/eccomerceApi"
-const AddCategory = ({ setOpen }) => {
+import { toast } from "react-toastify";
+const AddCategory = ({ setOpen ,parentId}) => {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
    const [addCategory, { isLoading }] = useAddCategoryMutation();
 
   const handleAddCategory =async() =>{
     try {
-        let response = await  addCategory({name ,slug}).unwrap()
-        console.log(response)
+        let response = await addCategory({
+          name: name,
+          slug: slug,
+          parentId: parentId}).unwrap();
+      console.log(response)
+        toast.success(response.message)
+        setOpen(false)
+        setName('')
+        setSlug('')
     } catch (error) {
-        console.log(error)
+        toast.error(error)
     }
   }
 
@@ -18,7 +26,7 @@ const AddCategory = ({ setOpen }) => {
     <div className="flex flex-col gap-6">
       <div className="text-center mb-4">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-          Add New Category
+          {parentId ? "Add Subcategory" : "Add Category"}
         </h2>
       </div>
 
@@ -58,8 +66,15 @@ const AddCategory = ({ setOpen }) => {
         >
           Cancel
         </button>
-        <button onClick={handleAddCategory} className="px-6 py-3 font-semibold bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 text-white rounded-xl hover:from-purple-700 hover:via-indigo-700 hover:to-cyan-700 transform hover:scale-105 transition-all duration-200 shadow-lg">
-          Save
+        <button
+          onClick={handleAddCategory}
+          className="px-6 py-3 font-semibold bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 text-white rounded-xl hover:from-purple-700 hover:via-indigo-700 hover:to-cyan-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+        >
+          {isLoading
+            ? "Adding..."
+            : parentId
+            ? "Add Subcategory"
+            : "Add Category"}
         </button>
       </div>
     </div>

@@ -14,16 +14,24 @@ export const eccomerceApi = createApi({
       }),
     }),
     addCategory: builder.mutation({
-      query: ({ name, slug }) => ({
-        method: "post",
-        url: "/category",
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-        body: { name, slug },
-      }),
+      query: ({ name, slug, parentId }) => {
+        const token = JSON.parse(localStorage.getItem("user"))?.token;
+        return {
+          method: "post",
+          url: "/category",
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+          body: {
+            name,
+            slug,
+            parentId: parentId || null,
+          },
+        };
+      },
       invalidatesTags: ["Category"],
     }),
+
     getAllCategory: builder.query({
       query: () => "category",
       providesTags: ["Category"],
