@@ -31,7 +31,6 @@ export const eccomerceApi = createApi({
       },
       invalidatesTags: ["Category"],
     }),
-
     getAllCategory: builder.query({
       query: () => "category",
       providesTags: ["Category"],

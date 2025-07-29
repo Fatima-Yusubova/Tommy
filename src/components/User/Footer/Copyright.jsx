@@ -8,7 +8,7 @@ const Copyright = () => {
           <img src="/assets/img/Logo.svg" alt="" />
         </a>
       </div>
-      <div class="flex gap-1 items-center flex-wrap py-5">
+      <div className="flex gap-1 items-center flex-wrap py-5">
         <a
           href="#"
           class="text-xs font-medium text-black 
@@ -16,21 +16,21 @@ const Copyright = () => {
         >
           Terms &amp; Conditions
         </a>
-        <span class="inline text-black text-xs">|</span>
+        <span className="inline text-black text-xs">|</span>
 
         <a
           href="#"
-          class="text-xs font-medium text-black 
+          className="text-xs font-medium text-black 
                       text-center sm:text-left"
         >
           Privacy Policy
         </a>
 
-        <span class="inline text-black text-xs">|</span>
+        <span className="inline text-black text-xs">|</span>
 
         <a
           href="#"
-          class="text-xs font-medium text-black 
+          className="text-xs font-medium text-black 
                       text-center sm:text-left"
         >
           Privacy Commitment
