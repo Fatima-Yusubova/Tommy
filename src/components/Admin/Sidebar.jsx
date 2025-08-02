@@ -1,16 +1,17 @@
 import React from 'react'
-import { Package, Grid3X3, LogOut, Home, Settings, User } from "lucide-react";
+import { Package, Grid3X3, LogOut,  Settings, User } from "lucide-react";
+import { Link } from 'react-router';
 const Sidebar = () => {
     const menuItems = [
-      { id: "dashboard", label: "Dashboard", icon: Home },
-      { id: "categories", label: "Categories", icon: Grid3X3 },
-      { id: "products", label: "Products", icon: Package },
+   
+      { id: "category", label: "Categories", icon: Grid3X3 },
+      { id: "product", label: "Products", icon: Package },
       { id: "users", label: "Users", icon: User },
-      { id: "settings", label: "Settings", icon: Settings },
+      { id: "/", label: "Go to website", icon: Settings },
     ];
-    const [activeItem, setActiveItem] = React.useState("dashboard")
+    const [activeItem, setActiveItem] = React.useState("categories")
   return (
-    <div className="h-screen w-64 bg-gradient-to-b from-purple-900 via-purple-800 to-indigo-900 text-white flex flex-col">
+    <div className="h-auto w-64 bg-gradient-to-b from-purple-900 via-purple-800 to-indigo-900 text-white flex flex-col ">
       {/* Logo Section */}
       <div className="p-6 border-b border-purple-700/50">
         <div className="flex items-center space-x-3">
@@ -32,7 +33,8 @@ const Sidebar = () => {
             const isActive = activeItem === item.id;
 
             return (
-              <button
+              <Link
+              to={item.id}
                 key={item.id}
                 onClick={() => setActiveItem(item.id)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
@@ -60,7 +62,7 @@ const Sidebar = () => {
                 {isActive && (
                   <div className="ml-auto w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
                 )}
-              </button>
+              </Link>
             );
           })}
         </div>
@@ -74,7 +76,7 @@ const Sidebar = () => {
           </div>
           <div className="flex-1">
             <p className="text-white font-medium">Admin User</p>
-            <p className="text-purple-300 text-sm">admin@example.com</p>
+            <p className="text-purple-300 text-sm">fatima@example.com</p>
           </div>
         </div>
 

@@ -29,7 +29,7 @@ const Category = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 p-6 w-full">
       <div className="max-w-full">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">

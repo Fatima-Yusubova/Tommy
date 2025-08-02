@@ -7,6 +7,7 @@ import Login from "../pages/Admin/Login";
 import Auth from "./Auth";
 import Admin from "../layout/Admin";
 import Category from "../pages/Admin/Category";
+import Product from "../pages/Admin/Product";
 
 export const route = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +24,7 @@ export const route = createBrowserRouter(
         </Auth>
       }>
         <Route path="/admin/category" element={<Category/>}/>
+        <Route path="/admin/product" element={<Product/>}/>
       </Route>
     </>
   )
