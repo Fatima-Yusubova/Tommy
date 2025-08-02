@@ -4,7 +4,7 @@ const token = JSON.parse(localStorage.getItem("user"))?.token
 export const eccomerceApi = createApi({
   reducerPath: "eccomerceApi",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" }),
-  tagTypes: ["Category"],
+  tagTypes: ["Category", "Product"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: ({ email, password }) => ({
@@ -15,7 +15,6 @@ export const eccomerceApi = createApi({
     }),
     addCategory: builder.mutation({
       query: ({ name, slug, parentId }) => {
-        const token = JSON.parse(localStorage.getItem("user"))?.token;
         return {
           method: "post",
           url: "/category",
@@ -46,7 +45,47 @@ export const eccomerceApi = createApi({
       }),
       invalidatesTags: ["Category"],
     }),
+    addProduct: builder.mutation({
+      query: ({
+        name,
+        description,
+        price,
+        stock,
+        brandId,
+        colors,
+        sizes,
+        images,
+        categoryId,
+        slug,
+      }) => ({
+        method: "post",
+        url: "/product",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+        body: {
+          name,
+          description,
+          price,
+          stock,
+          brandId,
+          colors,
+          sizes,
+          images,
+          categoryId,
+          slug,
+        },
+      }),
+      invalidatesTags: ["Product"],
+    }),
+    uploadImages: builder.mutation({
+      query: (formData) => ({
+        url: "/upload/image", 
+        method: "POST",
+        body: formData,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation,useAddCategoryMutation ,useGetAllCategoryQuery ,useUpdateCategoryMutation} = eccomerceApi;
+export const { useLoginMutation,useAddCategoryMutation ,useGetAllCategoryQuery ,useUpdateCategoryMutation ,useAddProductMutation ,useUploadImagesMutation} = eccomerceApi;
