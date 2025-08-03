@@ -80,12 +80,16 @@ export const eccomerceApi = createApi({
     }),
     uploadImages: builder.mutation({
       query: (formData) => ({
-        url: "/upload/image", 
+        url: "/upload/image",
         method: "POST",
         body: formData,
       }),
     }),
+    getAllProduct: builder.query({
+      query: () => "product/all",
+      providesTags: ["Product"],
+    }),
   }),
 });
 
-export const { useLoginMutation,useAddCategoryMutation ,useGetAllCategoryQuery ,useUpdateCategoryMutation ,useAddProductMutation ,useUploadImagesMutation} = eccomerceApi;
+export const { useLoginMutation,useAddCategoryMutation ,useGetAllCategoryQuery ,useUpdateCategoryMutation ,useAddProductMutation ,useUploadImagesMutation ,useGetAllProductQuery} = eccomerceApi;

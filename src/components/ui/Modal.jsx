@@ -7,7 +7,7 @@ const Modal = ({ open, setOpen, children }) => {
       <div
         className={`${
           open
-            ? "absolute z-20 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[500px] bg-gradient-to-br from-white via-purple-50 to-indigo-50 block rounded-3xl p-8 shadow-2xl border border-purple-200 max-h-[600px] overflow-y-scroll"
+            ? "absolute  z-20 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[800px] bg-gradient-to-br from-white via-purple-50 to-indigo-50 block rounded-3xl p-8 shadow-2xl border border-purple-200 max-h-[600px] overflow-y-scroll"
             : "hidden"
         }`}
       >

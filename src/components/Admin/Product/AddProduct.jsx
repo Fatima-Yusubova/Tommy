@@ -3,6 +3,8 @@ import { useGetAllCategoryQuery } from "../../../store/eccomerceApi";
 import { useAddProductMutation } from "../../../store/eccomerceApi";
 import { useUploadImagesMutation } from "../../../store/eccomerceApi"; // yol sənə uyğun dəyiş
 import { toast } from 'react-toastify';
+import { Editor } from "@tinymce/tinymce-react";
+
 
 
 
@@ -45,81 +47,68 @@ const AddProduct = ({setOpen}) => {
     "Ruby",
     "Sapphire",
   ];
-const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXS", "XXXS"];
+  const sizeArr = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXS", "XXXS"];
 
-  const [name  ,setName] = useState('')
-  const [description ,setDescription] = useState('')
-  const [price ,setPrice] = useState('')
-  const [stock ,setStock] = useState('')
-  const [brandId ,setBrand] = useState('')
-  const [slug ,setSlug] = useState('')
-  const [categoryId ,setCategoryId] = useState('')
+  const [name, setName] = useState("");
+  const [description ,setDescription] =useState('')
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [brandId, setBrand] = useState("");
+  const [slug, setSlug] = useState("");
+  const [sizes ,setSizes] = useState([])
+  const [categoryId, setCategoryId] = useState("");
   const [selectedColor, setSelectedColor] = useState([]);
-
-  const [imagesId, setImagesId] = useState([]);
-
-  const { data :category } = useGetAllCategoryQuery();
-   const[addProduct,{isLoading}] = useAddProductMutation();
-
-    const handleColorChange = (e) => {
-      const color = e.target.value;
-      if (color && !selectedColor.includes(color)) {
-        setSelectedColor([...selectedColor, color]);
-      }
-    };
-
+   const [images, setImages] = useState([]);
+   const [previews, setPreviews] = useState([]);
+   const [uploadImage] = useUploadImagesMutation();
    
-    const removeColor = (colorToRemove) => {
-      setSelectedColor(
-        selectedColor.filter((color) => color !== colorToRemove)
-      );
-    };
+  const { data: category } = useGetAllCategoryQuery();
+  const [addProduct, { isLoading }] = useAddProductMutation();
 
-    const [images, setImages] = useState([])
-    const [previews, setPreviews] = useState([])
-    const [uploadImage] = useUploadImagesMutation()
 
-    const handleFile = async (e) => {
-      const files = Array.from(e.target.files)
-      console.log(files)
+  const handleFile = async (e) => {
+    const files = Array.from(e.target.files)
+    console.log(files);
 
-      for (const file of files) {
-        const formData = new FormData()
-        formData.append("image", file)
-        try {
-          const result = await uploadImage(formData).unwrap()
-          console.log(result)
-          if (result?.id) {
-            setImages((prev) => [...prev, result.id])
-            setPreviews((prev) => [...prev, URL.createObjectURL(file)])
-          }
-        } catch (error) {
-          toast.error(error)
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("image", file);
+      try {
+        const result = await uploadImage(formData).unwrap();
+        console.log(result);
+        if (result?.id){
+          setImages((prev) => [...prev, result.id]);
+          setPreviews((prev) => [...prev, URL.createObjectURL(file)]);
         }
+        toast.success(result.message)
+        
+      } catch (error) {
+        toast.error(error)
       }
+    }
+  };
+   const handleProduct = async () => {
+     try {
+       const response = await addProduct({
+         name,
+         description,
+         price,
+         stock :Number(stock),
+         brandId: Number(brandId),
+         sizes,
+         images,
+         categoryId : Number(categoryId),
+         slug,
+         colors :selectedColor
+       }).unwrap();
 
-      //  const handleProducts = async () => {
-      //    try {
-      //      const response = await addProduct({
-      //        name,
-      //        description,
-      //        price: Number(price),
-      //        stock :Number(stock),
-      //        brandId: Number(brandId),
-      //        sizes,
-      //        images,
-      //        categoryId : Number(categoryId),
-      //        slug,
-      //        colors :selectedColor
-      //      }).unwrap();
-
-      //      console.log(response);
-      //    } catch (error) {
-      //      console.log(error);
-      //    }
-    };
+       console.log(response);
+     } catch (error) {
+       console.log(error);
+     }
+    }
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full">
       <div className="text-center mb-4">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
           Add Product
@@ -137,18 +126,75 @@ const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXS", "XXXS"];
           type="text"
         />
       </div>
+
       <div>
         <label className="block text-gray-700 text-lg font-semibold mb-3">
           Description
         </label>
-        <input
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
-          placeholder="Add product description..."
-          type="text"
+        <Editor
+          apiKey="ahgi51rrvah32ha9wv3ceygrba65648m382n46iti20jhor6"
+          init={{
+            plugins: [
+              // Core editing features
+              "anchor",
+              "autolink",
+              "charmap",
+              "codesample",
+              "emoticons",
+              "image",
+              "link",
+              "lists",
+              "media",
+              "searchreplace",
+              "table",
+              "visualblocks",
+              "wordcount",
+              // Your account includes a free trial of TinyMCE premium features
+              // Try the most popular premium features until Aug 16, 2025:
+              "checklist",
+              "mediaembed",
+              "casechange",
+              "formatpainter",
+              "pageembed",
+              "a11ychecker",
+              "tinymcespellchecker",
+              "permanentpen",
+              "powerpaste",
+              "advtable",
+              "advcode",
+              "editimage",
+              "advtemplate",
+              "ai",
+              "mentions",
+              "tinycomments",
+              "tableofcontents",
+              "footnotes",
+              "mergetags",
+              "autocorrect",
+              "typography",
+              "inlinecss",
+              "markdown",
+              "importword",
+              "exportword",
+              "exportpdf",
+            ],
+            toolbar:
+              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+            tinycomments_mode: "embedded",
+            tinycomments_author: "Author name",
+            mergetags_list: [
+              { value: "About", title: "about" },
+             
+            ],
+            ai_request: (request, respondWith) =>
+              respondWith.string(() =>
+                Promise.reject("See docs to implement AI Assistant")
+              ),
+          }}
+          initialValue="Welcome to TinyMCE!"
         />
       </div>
+
       <div>
         <label className="block text-gray-700 text-lg font-semibold mb-3">
           Price
@@ -158,7 +204,7 @@ const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXS", "XXXS"];
           onChange={(e) => setPrice(e.target.value)}
           className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
           placeholder="Add product price..."
-          type="text"
+          type="number"
         />
       </div>
       <div>
@@ -187,57 +233,43 @@ const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXS", "XXXS"];
       </div>
       <div>
         <label className="block text-gray-700 text-lg font-semibold mb-3">
-          Colors{" "}
-          {selectedColor.length > 0 && `(${selectedColor.length} selected)`}
+          Colors
         </label>
 
-        {/* Color seçmək üçün dropdown */}
         <select
-          onChange={handleColorChange}
-          value=""
+          multiple
+          value={selectedColor}
+          onChange={(e) => {
+            console.log(e.target.selectedOptions);
+            const selectedCo = Array.from(e.target.selectedOptions).map(
+              (item) => item.value
+            );
+            setSelectedColor(selectedCo);
+          }}
           className="block w-full border-2 border-purple-200 rounded-xl p-4 mb-3"
         >
-          <option value="">Select a color to add</option>
-          {colors
-            .filter((color) => !selectedColor.includes(color)) // Artıq seçilmiş colorları gizlət
-            .map((item, i) => (
-              <option value={item} key={i}>
-                {item}
-              </option>
-            ))}
+          {colors.map((item, i) => (
+            <option key={i} value={item}>
+              {item}
+            </option>
+          ))}
         </select>
-
-        {/* Seçilmiş colorları göstər */}
-        {selectedColor.length > 0 && (
-          <div className="flex flex-wrap gap-2 p-3 bg-purple-50 rounded-xl">
-            {selectedColor.map((color, index) => (
-              <div
-                key={index}
-                className="bg-white px-3 py-2 rounded-lg border-2 border-purple-200 flex items-center gap-2 shadow-sm"
-              >
-                <span className="text-gray-700 font-medium">{color}</span>
-                <button
-                  type="button"
-                  onClick={() => removeColor(color)}
-                  className="text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full w-5 h-5 flex items-center justify-center text-sm font-bold transition-all"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
       <div>
         <label className="block text-gray-700 text-lg font-semibold mb-3">
           Sizes
         </label>
         <select
+          multiple
+          value={sizes}
+          onChange={(e) =>
+            setSizes([...e.target.selectedOptions].map((opt) => opt.value))
+          }
           className="block w-full text-gray-700 text-lg font-semibold mb-3"
           name=""
           id=""
         >
-          {sizes.map((item, i) => (
+          {sizeArr.map((item, i) => (
             <option value={item} key={i}>
               {item}
             </option>
@@ -265,10 +297,6 @@ const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXS", "XXXS"];
               className="w-20 h-20 object-cover rounded border"
             />
           ))}
-        </div>
-
-        <div className="mt-4 text-sm text-gray-500">
-          <strong>Yüklənmiş şəkil ID-ləri:</strong> {JSON.stringify(images)}
         </div>
       </div>
 
@@ -312,7 +340,7 @@ const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXS", "XXXS"];
           Cancel
         </button>
         <button
-          
+          onClick={handleProduct}
           className="px-6 py-3 font-semibold bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 text-white rounded-xl hover:from-purple-700 hover:via-indigo-700 hover:to-cyan-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
         >
           Add Product
@@ -320,8 +348,6 @@ const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXS", "XXXS"];
       </div>
     </div>
   );
-  }
-  
 
-
+}
 export default AddProduct
