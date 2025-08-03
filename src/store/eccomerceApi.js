@@ -1,9 +1,24 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const token = JSON.parse(localStorage.getItem("user"))?.token
+// Token-i dinamik almaq üçün function
+const getToken = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user?.token;
+};
+
 export const eccomerceApi = createApi({
   reducerPath: "eccomerceApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:3000/api",
+    prepareHeaders: (headers, { getState }) => {
+      // Hər request-də fresh token al
+      const token = getToken();
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ["Category", "Product"],
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -18,9 +33,6 @@ export const eccomerceApi = createApi({
         return {
           method: "post",
           url: "/category",
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
           body: {
             name,
             slug,
@@ -38,9 +50,6 @@ export const eccomerceApi = createApi({
       query: ({ name, slug, id }) => ({
         method: "post",
         url: `/category/${id}`,
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
         body: { name, slug },
       }),
       invalidatesTags: ["Category"],
@@ -60,9 +69,6 @@ export const eccomerceApi = createApi({
       }) => ({
         method: "post",
         url: "/product",
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
         body: {
           name,
           description,
@@ -89,7 +95,20 @@ export const eccomerceApi = createApi({
       query: () => "product/all",
       providesTags: ["Product"],
     }),
+    getProductsById: builder.query({
+      query: (categoryId) => `product/category/${categoryId}`,
+      providesTags : ["Product"]
+    }),
   }),
 });
 
-export const { useLoginMutation,useAddCategoryMutation ,useGetAllCategoryQuery ,useUpdateCategoryMutation ,useAddProductMutation ,useUploadImagesMutation ,useGetAllProductQuery} = eccomerceApi;
+export const {
+  useGetProductsByIdQuery,
+  useLoginMutation,
+  useAddCategoryMutation,
+  useGetAllCategoryQuery,
+  useUpdateCategoryMutation,
+  useAddProductMutation,
+  useUploadImagesMutation,
+  useGetAllProductQuery,
+} = eccomerceApi;

@@ -1,7 +1,7 @@
 import React from 'react'
 import Navbar from './Navbar'
 import Action from './Action'
-import SaleBanner from './SaleBanner';
+import { Link } from 'react-router';
 
 const Header = () => {
   return (
@@ -22,14 +22,14 @@ const Header = () => {
       <div className="max-w-[95%] m-auto py-8">
         <header className="flex items-center justify-between">
           <div className="w-[234px]">
-            <a href="#">
+            <Link to='/'>
               <img
                 src="/assets/img/Logo.svg"
                 alt=""
                 className="hidden xl:block w-full object-cover"
               />
               <img className="xl:hidden" src="/Logo-mobile.svg" alt="" />
-            </a>
+            </Link>
           </div>
           <div className="hidden lg:block">
             <Navbar />
@@ -39,9 +39,7 @@ const Header = () => {
           </div>
         </header>
       </div>
-      <div>
-        <SaleBanner />
-      </div>
+     
     </div>
   );
 }

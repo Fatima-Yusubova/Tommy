@@ -21,6 +21,7 @@ const Modal = ({ open, setOpen, children }) => {
         </div>
         {children}
       </div>
+      
       {open && (
         <div className="fixed z-10 inset-0 bg-black/50 backdrop-blur-sm"></div>
       )}
