@@ -61,9 +61,11 @@ const ProductCard = ({ item }) => {
       setCurrentSlide(0)
     }
   }
-  const goToNext = () => { 
+  const goToNext = (e) => { 
+    e.stopPropagation()
     if (swiper) swiper.slideNext()}
-  const goToPrev = () => {
+  const goToPrev = (e) => {
+    e.stopPropagation()
     if (swiper) swiper.slidePrev()} 
   const swiperConfig = {
     modules: [Navigation, Pagination],
@@ -82,16 +84,26 @@ const ProductCard = ({ item }) => {
     allowTouchMove: true,
   }
   return (
-    <div className="">
-      <div className="h-[420px] relative overflow-hidden" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div className="cursor-pointer">
+      <div
+        className="relative overflow-hidden bg-gray-50 aspect-[3/4]"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {!hovered || !item?.images || item.images.length <= 1 ? (
-          <img className="w-full h-full object-cover" src={item?.images?.[0]?.url}
+          <img
+            className="w-full h-full object-cover"
+            src={item?.images?.[0]?.url}
+            alt={item?.name}
           />
         ) : (
           <Swiper {...swiperConfig} className="w-full h-full product-swiper">
             {item.images.map((img, i) => (
               <SwiperSlide key={i}>
-                <img className="w-full h-full object-cover" src={img.url}
+                <img
+                  className="w-full h-full object-cover"
+                  src={img.url}
+                  alt={`${item?.name} - ${i + 1}`}
                 />
               </SwiperSlide>
             ))}
@@ -99,14 +111,32 @@ const ProductCard = ({ item }) => {
         )}
         {hovered && item?.images?.length > 1 && (
           <>
-            <button className={`prev-button-${item?.id} absolute left-2 top-1/2 transform -translate-y-1/2 z-10 bg-white/60 hover:bg-white rounded-full p-1 `} onClick={goToPrev}>
+            <button
+              className={`prev-button-${item?.id} absolute left-2 top-1/2 transform -translate-y-1/2 z-10 bg-white/60 hover:bg-white rounded-full p-1`}
+              onClick={goToPrev}
+            >
               <ChevronLeft size={20} />
             </button>
-            <button className={`next-button-${item?.id} absolute right-2 top-1/2 transform -translate-y-1/2 z-10 bg-white/60 hover:bg-white rounded-full p-1 `}  onClick={goToNext}>
-              <ChevronRight size={20}  />
+            <button
+              className={`next-button-${item?.id} absolute right-2 top-1/2 transform -translate-y-1/2 z-10 bg-white/60 hover:bg-white rounded-full p-1`}
+              onClick={goToNext}
+            >
+              <ChevronRight size={20} />
             </button>
           </>
         )}
+        {hovered && (
+          <div className="hidden lg:flex  absolute inset-0 z-5 items-center justify-center">
+            <button className="bg-white opacity-80 rounded-sm text-black  py-2 w-[180px]">
+              Quick View
+            </button>
+          </div>
+        )}
+        <div className="absolute bottom-3 right-3 lg:hidden">
+          <button className="bg-white w-5 h-5 border-gray-400 border-1 flex items-center justify-center p-1 rounded-full">
+            +
+          </button>
+        </div>
       </div>
       <div className="p-3">
         <h3 className="py-2 font-medium">{item?.name}</h3>
@@ -125,33 +155,6 @@ const ProductCard = ({ item }) => {
           </div>
         )}
       </div>
-      <style jsx>{`
-        .product-swiper .swiper-pagination {
-          bottom: 12px !important;
-          z-index: 10;
-        }
-        .product-swiper .swiper-pagination-bullet {
-          background: #e0e0e0 !important;
-          opacity: 0.6 !important;
-          width: 23px !important;
-          height: 2px !important;
-          border-radius: 2px !important;
-          margin: 0 2px !important;
-        }
-        .product-swiper .swiper-pagination-bullet-active {
-          opacity: 1 !important;
-          background: black !important; 
-        }
-        .product-swiper .swiper-slide {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .product-swiper .swiper-button-next,
-        .product-swiper .swiper-button-prev {
-          display: none !important;
-        }
-      `}</style>
     </div>
   );
 };

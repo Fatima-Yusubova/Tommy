@@ -3,9 +3,48 @@
   src: url('../src/assets/fonts/EBGaramond-MediumItalic.ttf') format('truetype');
   font-weight: 500;
 }
+@font-face {
+  font-family: 'America';
+  src: url('../src/assets/fonts/GT-America-Standard-Regular-Trial.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 @import "tailwindcss";
 
 @theme {
   --font-garamond : EBgaramond ,"sans-serif" ;
 }
+* {
+  font-family: America ,sans-serif;
+}
+.product-swiper .swiper-pagination {
+  bottom: 12px !important;
+  z-index: 10;
+}
+
+.product-swiper .swiper-pagination-bullet {
+  background: #e0e0e0 !important;
+  opacity: 0.6 !important;
+  width: 23px !important;
+  height: 2px !important;
+  border-radius: 2px !important;
+  margin: 0 2px !important;
+}
+
+.product-swiper .swiper-pagination-bullet-active {
+  opacity: 1 !important;
+  background: black !important;
+}
+
+.product-swiper .swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-swiper .swiper-button-next,
+.product-swiper .swiper-button-prev {
+  display: none !important;
+}
+
