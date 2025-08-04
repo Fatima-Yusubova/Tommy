@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
-
-// Swiper CSS-lərini import et
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
 const colorMapping = {
   Red: "#FF0000",
   Blue: "#0000FF",
@@ -46,45 +43,28 @@ const colorMapping = {
   Ruby: "#E0115F",
   Sapphire: "#0F52BA",
 };
-
 const ProductCard = ({ item }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [swiperInstance, setSwiperInstance] = useState(null);
-
+  const [swiper, setSwiper] = useState(null)
   const handleMouseEnter = () => {
-    setIsHovered(true);
-    // Hover edəndə 2-ci şəkilə (index 1) keç
-    if (swiperInstance && item?.images?.length > 1) {
-      swiperInstance.slideTo(1, 300);
-      setCurrentSlide(1);
+    setHovered(true)
+    if (swiper && item?.images?.length > 1) {
+      swiper.slideTo(1, 300)
+      setCurrentSlide(1)
     }
-  };
-
+  }
   const handleMouseLeave = () => {
-    setIsHovered(false);
-    // Mouse çıxanda ilk şəkilə qayıt
-    if (swiperInstance) {
-      swiperInstance.slideTo(0, 300);
-      setCurrentSlide(0);
+    setHovered(false)
+    if (swiper) {
+      swiper.slideTo(0, 300)
+      setCurrentSlide(0)
     }
-  };
-
-  const goToNext = (e) => {
-    e.stopPropagation(); // Parent hover event-ini dayandır
-    if (swiperInstance) {
-      swiperInstance.slideNext();
-    }
-  };
-
-  const goToPrev = (e) => {
-    e.stopPropagation();
-    if (swiperInstance) {
-      swiperInstance.slidePrev();
-    }
-  };
-
-  // Swiper konfiqurasiyası (autoplay YOX)
+  }
+  const goToNext = () => { 
+    if (swiper) swiper.slideNext()}
+  const goToPrev = () => {
+    if (swiper) swiper.slidePrev()} 
   const swiperConfig = {
     modules: [Navigation, Pagination],
     navigation: {
@@ -96,69 +76,41 @@ const ProductCard = ({ item }) => {
       dynamicBullets: false,
     },
     loop: false,
-    speed:0,
-    onSwiper: (swiper) => setSwiperInstance(swiper),
+    speed:2,
+    onSwiper: (swiper) => setSwiper(swiper),
     onSlideChange: (swiper) => setCurrentSlide(swiper.activeIndex),
-    allowTouchMove: true, // Touch/drag aktiv
-  };
-
+    allowTouchMove: true,
+  }
   return (
     <div className="">
-      <div
-        className="h-[420px] relative overflow-hidden"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {!isHovered || !item?.images || item.images.length <= 1 ? (
-          // Hover olmayanda və ya tək şəkil varsa sadəcə ilk şəkil
-          <img
-            className="w-full h-full object-cover"
-            src={item?.images?.[0]?.url}
-            alt={item?.name}
+      <div className="h-[420px] relative overflow-hidden" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        {!hovered || !item?.images || item.images.length <= 1 ? (
+          <img className="w-full h-full object-cover" src={item?.images?.[0]?.url}
           />
         ) : (
-          // Hover olanda və çoxlu şəkil varsa Swiper
           <Swiper {...swiperConfig} className="w-full h-full product-swiper">
-            {item.images.map((image, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  className="w-full h-full object-cover"
-                  src={image.url}
-                  alt={`${item.name} - ${index + 1}`}
+            {item.images.map((img, i) => (
+              <SwiperSlide key={i}>
+                <img className="w-full h-full object-cover" src={img.url}
                 />
               </SwiperSlide>
             ))}
           </Swiper>
         )}
-
-        {/* Navigation Button-lar - yalnız hover edəndə və çoxlu şəkil varsa */}
-        {isHovered && item?.images?.length > 1 && (
+        {hovered && item?.images?.length > 1 && (
           <>
-            {/* Sol Button */}
-            <button
-              className={`prev-button-${item?.id} absolute left-2 top-1/2 transform -translate-y-1/2 z-10 bg-white/60 hover:bg-white rounded-full p-1 `}
-              onClick={goToPrev}
-            >
+            <button className={`prev-button-${item?.id} absolute left-2 top-1/2 transform -translate-y-1/2 z-10 bg-white/60 hover:bg-white rounded-full p-1 `} onClick={goToPrev}>
               <ChevronLeft size={20} />
             </button>
-
-            {/* Sağ Button */}
-            <button
-              className={`next-button-${item?.id} absolute right-2 top-1/2 transform -translate-y-1/2 z-10 bg-white/60 hover:bg-white rounded-full p-1 `}
-              onClick={goToNext}
-            >
+            <button className={`next-button-${item?.id} absolute right-2 top-1/2 transform -translate-y-1/2 z-10 bg-white/60 hover:bg-white rounded-full p-1 `}  onClick={goToNext}>
               <ChevronRight size={20}  />
             </button>
           </>
         )}
       </div>
-
-      {/* Məhsul məlumatları */}
       <div className="p-3">
         <h3 className="py-2 font-medium">{item?.name}</h3>
         <p className="font-medium">${item?.price}</p>
-
-        {/* Rəng seçimləri */}
         {item?.colors && item.colors.length > 0 && (
           <div className="flex gap-2 mt-2">
             {item.colors.map((color, i) => (
@@ -173,16 +125,11 @@ const ProductCard = ({ item }) => {
           </div>
         )}
       </div>
-
-      {/* Custom CSS for Swiper */}
       <style jsx>{`
-      
-
         .product-swiper .swiper-pagination {
           bottom: 12px !important;
           z-index: 10;
         }
-
         .product-swiper .swiper-pagination-bullet {
           background: #e0e0e0 !important;
           opacity: 0.6 !important;
@@ -191,18 +138,15 @@ const ProductCard = ({ item }) => {
           border-radius: 2px !important;
           margin: 0 2px !important;
         }
-
         .product-swiper .swiper-pagination-bullet-active {
           opacity: 1 !important;
-          background: black !important; /* 🛠️ Qara olsun deyə əlavə etdik */
+          background: black !important; 
         }
-
         .product-swiper .swiper-slide {
           display: flex;
           align-items: center;
           justify-content: center;
         }
-
         .product-swiper .swiper-button-next,
         .product-swiper .swiper-button-prev {
           display: none !important;
