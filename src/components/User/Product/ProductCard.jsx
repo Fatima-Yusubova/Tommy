@@ -5,6 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import QuickviewMenu from "./QuickviewMenu";
 const colorMapping = {
   Red: "#FF0000",
   Blue: "#0000FF",
@@ -47,6 +48,7 @@ const ProductCard = ({ item }) => {
   const [hovered, setHovered] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [swiper, setSwiper] = useState(null)
+  const [view ,setView] = useState(false)
   const handleMouseEnter = () => {
     setHovered(true)
     if (swiper && item?.images?.length > 1) {
@@ -94,7 +96,6 @@ const ProductCard = ({ item }) => {
           <img
             className="w-full h-full object-cover"
             src={item?.images?.[0]?.url}
-            alt={item?.name}
           />
         ) : (
           <Swiper {...swiperConfig} className="w-full h-full product-swiper">
@@ -127,13 +128,15 @@ const ProductCard = ({ item }) => {
         )}
         {hovered && (
           <div className="hidden lg:flex  absolute inset-0 z-5 items-center justify-center">
-            <button className="bg-white opacity-80 rounded-sm text-black  py-2 w-[180px]">
+            
+            <button onClick={() =>setView(true)}  className="bg-white opacity-80 rounded-sm text-black  py-2 w-[180px]">
               Quick View
             </button>
           </div>
         )}
+        <QuickviewMenu item={item} view={view} setView={setView} />
         <div className="absolute bottom-3 right-3 lg:hidden">
-          <button className="bg-white w-5 h-5 border-gray-400 border-1 flex items-center justify-center p-1 rounded-full">
+          <button onClick={() =>setView(true)} className="bg-white w-5 h-5 border-gray-400 border-1 flex items-center justify-center p-1 rounded-full">
             +
           </button>
         </div>

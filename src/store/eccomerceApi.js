@@ -99,10 +99,15 @@ export const eccomerceApi = createApi({
       query: (categoryId) => `product/category/${categoryId}`,
       providesTags : ["Product"]
     }),
+    getProductId : builder.query({
+      query : (id) =>`product/${id}`,
+      providesTags : ["Product"]
+    })
   }),
 });
 
 export const {
+  useGetProductIdQuery,
   useGetProductsByIdQuery,
   useLoginMutation,
   useAddCategoryMutation,
