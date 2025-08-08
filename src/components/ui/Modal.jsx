@@ -1,4 +1,3 @@
-// Modal.jsx
 import { X } from "lucide-react";
 
 const Modal = ({ open, setOpen, children }) => {

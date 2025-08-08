@@ -128,22 +128,44 @@ const ProductCard = ({ item }) => {
         )}
         {hovered && (
           <div className="hidden lg:flex  absolute inset-0 z-5 items-center justify-center">
-            
-            <button onClick={() =>setView(true)}  className="bg-white opacity-80 rounded-sm text-black  py-2 w-[180px]">
+            <button
+              onClick={() => setView(true)}
+              className="bg-white opacity-80 rounded-sm text-black  py-2 w-[180px]"
+            >
               Quick View
             </button>
           </div>
         )}
         <QuickviewMenu item={item} view={view} setView={setView} />
         <div className="absolute bottom-3 right-3 lg:hidden">
-          <button onClick={() =>setView(true)} className="bg-white w-5 h-5 border-gray-400 border-1 flex items-center justify-center p-1 rounded-full">
+          <button
+            onClick={() => setView(true)}
+            className="bg-white w-5 h-5 border-gray-400 border-1 flex items-center justify-center p-1 rounded-full"
+          >
             +
           </button>
         </div>
       </div>
       <div className="p-3">
         <h3 className="py-2 font-medium">{item?.name}</h3>
-        <p className="font-medium">${item?.price}</p>
+        <div className="flex items-center gap-2">
+          {item?.discount > 0 ? (
+            <>
+              <span className="text-[#484848] text-sm line-through">
+                ${item?.price}
+              </span>
+              <span className="text-black font-medium">
+                ${(item?.price * (1 - item?.discount / 100)).toFixed(2)}
+              </span>
+              <span className="text-[#464C52] text-sm">
+                {item?.discount}% off
+              </span>
+            </>
+          ) : (
+            <span className="text-black font-medium">${item?.price}</span>
+          )}
+        </div>
+
         {item?.colors && item.colors.length > 0 && (
           <div className="flex gap-2 mt-2">
             {item.colors.map((color, i) => (

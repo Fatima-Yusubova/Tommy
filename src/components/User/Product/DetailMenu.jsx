@@ -5,6 +5,9 @@ const DetailMenu = ({ flag, setFlag, product }) => {
   useEffect(() => {
     document.body.style.overflow = flag ? "hidden" : "unset";
   }, [flag]);
+ if(product){
+    console.log(product)
+ }
 
   return (
     <>

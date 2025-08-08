@@ -61,14 +61,13 @@ const QuickviewMenu = ({ view, setView, item }) => {
   }, [view]);
 
   const handleClick = () => {
-    setView(false)
-    document.body.style.overflow = "unset"
-    navigate(`/product/${product?.id}`)
+    setView(false);
+    document.body.style.overflow = "unset";
+    navigate(`/product/${product?.id}`);
   };
 
   return (
     <>
-   
       <div
         className={`
           fixed inset-0 bg-black z-40 transition-opacity duration-500
@@ -94,7 +93,7 @@ const QuickviewMenu = ({ view, setView, item }) => {
           <IoClose size={24} />
         </button>
 
-      
+        {/* Mobile */}
         <div className="md:hidden overflow-y-auto h-full">
           <div className="h-full">
             <div className="flex gap-1 overflow-x-auto scrollbar-hidden mb-6">
@@ -103,7 +102,7 @@ const QuickviewMenu = ({ view, setView, item }) => {
                   <img
                     src={item.url}
                     alt=""
-                    className="w-full h-full object-cover "
+                    className="w-full h-full object-cover"
                   />
                 </div>
               ))}
@@ -113,7 +112,31 @@ const QuickviewMenu = ({ view, setView, item }) => {
               <Link className="text-xl font-medium block mb-3">
                 {product?.name}
               </Link>
-              <p className="text-md font-semibold mb-6">${product?.price}</p>
+
+              {/* Mobil endirimli qiymət */}
+              <div className="flex items-center gap-2">
+                {product?.discount > 0 ? (
+                  <>
+                    <span className="text-[#484848] text-sm line-through">
+                      ${product?.price}
+                    </span>
+                    <span className="text-black font-medium">
+                      $
+                      {(product?.price * (1 - product?.discount / 100)).toFixed(
+                        2
+                      )}
+                    </span>
+                    <span className="text-[#464C52] text-sm">
+                      {product?.discount}% off
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-black font-medium">
+                    ${product?.price}
+                  </span>
+                )}
+              </div>
+
               <div className="mb-6">
                 <span className="text-[#464C52] text-sm">Color</span>{" "}
                 <span className="text-sm font-medium">{selectedColor}</span>
@@ -133,7 +156,6 @@ const QuickviewMenu = ({ view, setView, item }) => {
                 </div>
               </div>
 
-            
               <div className="mb-6">
                 <p className="text-[#464C52] text-sm mb-3">Size</p>
                 <ul className="grid grid-cols-4 gap-3">
@@ -175,7 +197,7 @@ const QuickviewMenu = ({ view, setView, item }) => {
           </div>
         </div>
 
-
+        {/* Desktop */}
         <div className="hidden md:flex gap-3 h-full">
           <div className="basis-[50%] overflow-y-auto h-screen scrollbar-hidden">
             {product?.images?.map((item, i) => (
@@ -187,7 +209,30 @@ const QuickviewMenu = ({ view, setView, item }) => {
           <div className="overflow-hidden h-full basis-[50%] px-5 py-10">
             <h5 className="py-4 text-xs">Tommy Hilfiger</h5>
             <Link className="text-xl ">{product?.name}</Link>
-            <p className="py-5"> $ {product?.price}</p>
+
+            {/* D */}
+            <div className="flex items-center gap-2 py-5">
+              {product?.discount > 0 ? (
+                <>
+                  <span className="text-[#484848] text-lg line-through">
+                    ${product?.price}
+                  </span>
+                  <span className="text-black font-medium">
+                    $
+                    {(product?.price * (1 - product?.discount / 100)).toFixed(
+                      2
+                    )}
+                  </span>
+                  <span className="text-[#464C52] text-lg">
+                    {product?.discount}% off
+                  </span>
+                </>
+              ) : (
+                <span className="text-black font-medium">
+                  ${product?.price}
+                </span>
+              )}
+            </div>
 
             <div>
               <span className="text-[#464C52] text-sm">Color</span>{" "}
