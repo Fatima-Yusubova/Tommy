@@ -71,6 +71,7 @@ const AddProduct = ({ setOpen }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [discount ,setDiscount] = useState('')
   const [stock, setStock] = useState("");
   const [brandId, setBrand] = useState("");
   const [slug, setSlug] = useState("");
@@ -110,6 +111,7 @@ const AddProduct = ({ setOpen }) => {
         name,
         description: description,
         price,
+        discount,
         stock: Number(stock),
         brandId: Number(brandId),
         sizes,
@@ -221,6 +223,18 @@ const AddProduct = ({ setOpen }) => {
             onChange={(e) => setPrice(e.target.value)}
             className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
             placeholder="Add product price..."
+            type="number"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 text-lg font-semibold mb-3">
+            Dsicount
+          </label>
+          <input
+            value={discount}
+            onChange={(e) => setDiscount(e.target.value)}
+            className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
+            placeholder="Add product discount..."
             type="number"
           />
         </div>

@@ -1,8 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Token-i dinamik almaq üçün function
 const getToken = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"))
   return user?.token;
 };
 
@@ -59,6 +58,7 @@ export const eccomerceApi = createApi({
         name,
         description,
         price,
+        discount,
         stock,
         brandId,
         colors,
@@ -73,6 +73,7 @@ export const eccomerceApi = createApi({
           name,
           description,
           price,
+          discount,
           stock,
           brandId,
           colors,

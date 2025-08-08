@@ -31,16 +31,16 @@ const NewsForm = () => {
                 className="underline"
               >
                 Terms and Conditions
-              </a>{" "}
+              </a>
               and to receive updates on the latest products and promotions via
-              email or other channels. See{" "}
+              email or other channels. See
               <a
                 href="#"
                 className=" underline"
               >
                 Privacy Policy
               </a>
-              , which includes our{" "}
+              , which includes our
               <a
                 href="#"
                 className=" underline "

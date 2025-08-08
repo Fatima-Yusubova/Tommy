@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetProductIdQuery } from "../../store/eccomerceApi";
 import { Link, useParams } from "react-router";
 import { ChevronRight } from "lucide-react";
+import DetailMenu from "../../components/User/Product/DetailMenu";
 
 const colorMapping = {
   Red: "#FF0000",
@@ -45,43 +46,37 @@ const colorMapping = {
 const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState();
   const [selectedSize, setSelectedSize] = useState();
+  const [flag ,setFlag] = useState(false)
 
   const { id } = useParams();
   const { data: product } = useGetProductIdQuery(id);
 
+  // useEffect(() => {
+  //   document.body.style.overflow = "unset !important"  ;
+  // }, [])
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_650px] lg:gap-[100px] py-10">
-      {/* Desktop: vertical image list */}
-      <div className="hidden lg:flex flex-col ">
+    <div className="flex gap-[100px] flex-col md:flex-row py-10">
+      <div className="hidden md:flex flex-col md:basis-[50%] ">
         {product?.images?.map((item, i) => (
           <div key={i} className="w-full">
-            <img
-              className="w-full h-full object-cover "
-              src={item.url}
-           
-            />
+            <img className="w-full h-full object-cover " src={item.url} />
           </div>
         ))}
       </div>
-      <div className="lg:hidden flex overflow-x-auto gap-0 scrollbar-hidden">
+      <div className="md:hidden flex overflow-x-auto   scrollbar-hidden">
         {product?.images?.map((item, i) => (
-          <div key={i} className="w-full h-[800px]  shrink-0">
-            <img
-              className="w-full h-full object-cover"
-              src={item.url}
-           
-            />
+          <div key={i} className="w-full aspect-[3/4]  shrink-0">
+            <img className="w-full h-full object-cover" src={item.url} />
           </div>
         ))}
       </div>
 
-     
-      <div className="sticky  top-10 self-start px-5 py-10 h-fit">
+      <div className="sticky w-full md:basis-[40%]  top-10 self-start px-10 md:pr-20 py-10 h-fit">
         <h5 className="py-4 text-xs">Tommy Hilfiger</h5>
         <Link className="text-xl ">{product?.name}</Link>
         <p className="py-5"> $ {product?.price}</p>
 
-      
         <div>
           <span className="text-[#464C52] text-sm">Color</span>{" "}
           <span className="text-sm">{selectedColor}</span>
@@ -100,12 +95,12 @@ const ProductDetail = () => {
         </div>
         <div>
           <p className="text-[#464C52] text-sm py-5">Size</p>
-          <ul className="grid grid-cols-5 gap-2">
+          <ul className="flex items-center gap-3 flex-wrap">
             {product?.sizes?.map((size, i) => (
               <li
                 key={i}
                 onClick={() => setSelectedSize(size)}
-                className={`w-15 h-12 border rounded-sm flex items-center justify-center cursor-pointer ${
+                className={`w-20 h-12 border rounded-sm flex items-center justify-center cursor-pointer ${
                   selectedSize === size ? "border-black" : "border-gray-300"
                 }`}
               >
@@ -115,13 +110,12 @@ const ProductDetail = () => {
           </ul>
         </div>
 
-      
         <div className="flex items-center gap-5 py-4">
           <select className="border border-gray-200 rounded-sm py-4 px-5">
             <option value="">Qty</option>
             <option value="">1</option>
           </select>
-          <button className="py-4 w-full bg-black text-white rounded-sm hover:underline">
+          <button className="py-3 w-full bg-black text-white rounded-sm hover:underline">
             {selectedSize ? "Add to Cart" : "Select A Size"}
           </button>
         </div>
@@ -144,19 +138,28 @@ const ProductDetail = () => {
         <div>
           <div className="flex w-full justify-between items-center mb-5">
             <p>Product Details</p>
-            <ChevronRight size={20} strokeWidth={3} />
+            <button onClick={() =>setFlag(true)}>
+              <ChevronRight size={20} strokeWidth={3} />
+            </button>
           </div>
+          <DetailMenu flag={flag} setFlag={setFlag} product={product}/>
           <div className="flex w-full justify-between items-center mb-5">
             <p>Shipping & Returns</p>
-            <ChevronRight size={20} strokeWidth={3} />
+            <button>
+              <ChevronRight size={20} strokeWidth={3} />
+            </button>
           </div>
           <div className="flex w-full justify-between items-center mb-5">
             <p>Write a Review</p>
-            <ChevronRight size={20} strokeWidth={3} />
+            <button>
+              <ChevronRight size={20} strokeWidth={3} />
+            </button>
           </div>
           <div className="flex w-full justify-between items-center mb-5">
             <p>Ask a Question</p>
-            <ChevronRight size={20} strokeWidth={3} />
+            <button>
+              <ChevronRight size={20} strokeWidth={3} />
+            </button>
           </div>
         </div>
       </div>
