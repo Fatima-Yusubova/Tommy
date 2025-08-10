@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useGetProductIdQuery } from "../../store/eccomerceApi";
 import { Link, useParams } from "react-router";
 import { ChevronRight } from "lucide-react";
-import DetailMenu from "../../components/User/Product/DetailMenu";
+import DetailMenu from "../../components/User/Product/DetailMenuContent";
+import OpenMenu from "../../components/ui/OpenMenu";
+import DetailMenuContent from "../../components/User/Product/DetailMenuContent";
 
 const colorMapping = {
   Red: "#FF0000",
@@ -131,18 +133,22 @@ const ProductDetail = () => {
             <img
               className="w-16"
               src="/assets/img/afterpay.svg"
-              alt="Afterpay"
+           
             />
           </div>
         </div>
         <div>
           <div className="flex w-full justify-between items-center mb-5">
             <p>Product Details</p>
-            <button onClick={() =>setFlag(true)}>
+            <button onClick={() => setFlag(true)}>
               <ChevronRight size={20} strokeWidth={3} />
             </button>
           </div>
-          <DetailMenu flag={flag} setFlag={setFlag} product={product}/>
+
+          <OpenMenu open={flag} setOpen={setFlag} width="max-w-4xl">
+            <DetailMenuContent product={product} closeMenu={() => setFlag(false)} />
+          </OpenMenu>
+
           <div className="flex w-full justify-between items-center mb-5">
             <p>Shipping & Returns</p>
             <button>
