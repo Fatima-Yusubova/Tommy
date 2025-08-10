@@ -32,9 +32,7 @@ const OpenMenu = ({ open, setOpen, children, width = "max-w-lg" }) => {
         `}
       >
         <div className="flex items-start  h-full">
-          {/* Yuxarı hissə (bağlama düyməsi) */}
-
-          {/* İç məzmun */}
+       
           <div className="flex-1 overflow-y-auto">{children}</div>
           <div className="hidden md:flex items-center justify-between ">
             <button
