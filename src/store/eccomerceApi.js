@@ -27,6 +27,27 @@ export const eccomerceApi = createApi({
         body: { email: email, password: password },
       }),
     }),
+    signUp: builder.mutation({
+      query: ({
+        firstName,
+        lastName,
+        email,
+        password,
+        gender,
+        dateOfBirth,
+      }) => ({
+        method: "post",
+        url: "/auth/signup",
+        body: {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          gender : gender ,
+          dateOfBirth :dateOfBirth
+        },
+      }),
+    }),
     addCategory: builder.mutation({
       query: ({ name, slug, parentId }) => {
         return {
@@ -98,16 +119,17 @@ export const eccomerceApi = createApi({
     }),
     getProductsById: builder.query({
       query: (categoryId) => `product/category/${categoryId}`,
-      providesTags : ["Product"]
+      providesTags: ["Product"],
     }),
-    getProductId : builder.query({
-      query : (id) =>`product/${id}`,
-      providesTags : ["Product"]
-    })
+    getProductId: builder.query({
+      query: (id) => `product/${id}`,
+      providesTags: ["Product"],
+    }),
   }),
 });
 
 export const {
+  useSignUpMutation,
   useGetProductIdQuery,
   useGetProductsByIdQuery,
   useLoginMutation,

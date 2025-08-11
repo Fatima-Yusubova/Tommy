@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.11",
     "@tinymce/tinymce-react": "^6.3.0",
+    "formik": "^2.4.6",
     "latest-version": "^9.0.0",
     "lucide-react": "^0.526.0",
     "react": "^19.1.0",
@@ -22,7 +23,8 @@
     "react-router": "^7.7.0",
     "react-toastify": "^11.0.5",
     "swiper": "^11.2.10",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "yup": "^1.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
