@@ -19,7 +19,6 @@ const validationSchema = Yup.object().shape({
       "Only Gmail addresses are allowed"
     )
     .required("Please enter an email address"),
-
   password: Yup.string()
     .matches(/[a-z]/, "1 lowercase character")
     .matches(/[A-Z]/, "1 uppercase character")
