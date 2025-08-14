@@ -57,14 +57,14 @@
   scrollbar-width: none;  
 }
 
-.product-description {
+/* .product-description {
   font-family: sans-serif;
   color: #222;
   line-height: 1.6;
-}
+} */
 
 
-.product-description h1,
+/* .product-description h1,
 .product-description h2,
 .product-description h3 {
   font-weight: bold;
@@ -102,5 +102,120 @@
   .product-description li {
     white-space: normal; 
     line-height: 1.6; 
+  }
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+ */
+
+/* CSS faylınıza və ya global.css-ə əlavə edin */
+
+/* About Section */
+.product-description .about-section {
+  margin-bottom: 1.5rem;
+}
+
+.product-description .section-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .product-description .section-title {
+    font-size: 1.25rem;
+  }
+}
+
+.product-description .about-text {
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.625;
+}
+
+@media (min-width: 768px) {
+  .product-description .about-text {
+    font-size: 1rem;
+  }
+}
+
+/* Details Section */
+.product-description .details-section {
+  margin-bottom: 1.5rem;
+}
+
+.product-description .details-list {
+  list-style-type: disc;
+  list-style-position: inside;
+  margin-left: 0;
+}
+
+.product-description .details-list li {
+  margin-bottom: 0.5rem;
+}
+
+.product-description .detail-item {
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.625;
+}
+
+@media (min-width: 768px) {
+  .product-description .detail-item {
+    font-size: 1rem;
+  }
+}
+
+/* Product Specifications */
+.product-description .product-specs {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+}
+
+.product-description .spec-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.product-description .spec-row:last-child {
+  border-bottom: none;
+}
+
+@media (min-width: 768px) {
+  .product-description .spec-row {
+    flex-direction: row;
+      padding: 2rem 0;
+    align-items: flex-start;
+  }
+}
+
+.product-description .spec-label {
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .product-description .spec-label {
+    width: 7rem;
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+}
+
+.product-description .spec-value {
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .product-description .spec-value {
+    margin-left: 1.5rem;
   }
 }

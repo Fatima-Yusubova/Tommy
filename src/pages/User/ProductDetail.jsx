@@ -53,13 +53,9 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { data: product } = useGetProductIdQuery(id);
 
-  // useEffect(() => {
-  //   document.body.style.overflow = "unset !important"  ;
-  // }, [])
-
   return (
     <div className="flex gap-[100px] flex-col md:flex-row py-10">
-      <div className="hidden md:flex flex-col md:basis-[50%] ">
+      <div className="hidden md:flex flex-col gap-2 md:basis-[50%] ">
         {product?.images?.map((item, i) => (
           <div key={i} className="w-full">
             <img className="w-full h-full object-cover " src={item.url} />
@@ -103,7 +99,7 @@ const ProductDetail = () => {
                 key={i}
                 onClick={() => setSelectedSize(size)}
                 className={`w-20 h-12 border rounded-sm flex items-center justify-center cursor-pointer ${
-                  selectedSize === size ? "border-black" : "border-gray-300"
+                  selectedSize === size ? "border-black bg-black text-white" : "border-gray-300"
                 }`}
               >
                 {size}

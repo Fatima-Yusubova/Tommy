@@ -154,10 +154,10 @@ const AddProduct = ({ setOpen }) => {
         <Editor
           apiKey="ahgi51rrvah32ha9wv3ceygrba65648m382n46iti20jhor6"
           value={description}
-          onEditorChange={(content, editor) => setDescription(content)}
+          onEditorChange={(content) => setDescription(content)}
           init={{
+            height: 400,
             plugins: [
-              // Core editing features
               "anchor",
               "autolink",
               "charmap",
@@ -168,11 +168,10 @@ const AddProduct = ({ setOpen }) => {
               "lists",
               "media",
               "searchreplace",
-              "table",
+              "table", // əsas table plugin
+              "advtable", // table üçün advanced imkanlar
               "visualblocks",
               "wordcount",
-              // Your account includes a free trial of TinyMCE premium features
-              // Try the most popular premium features until Aug 16, 2025:
               "checklist",
               "mediaembed",
               "casechange",
@@ -182,11 +181,9 @@ const AddProduct = ({ setOpen }) => {
               "tinymcespellchecker",
               "permanentpen",
               "powerpaste",
-              "advtable",
               "advcode",
               "editimage",
               "advtemplate",
-              "ai",
               "mentions",
               "tinycomments",
               "tableofcontents",
@@ -201,17 +198,24 @@ const AddProduct = ({ setOpen }) => {
               "exportpdf",
             ],
             toolbar:
-              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+              "undo redo | blocks fontfamily fontsize | " +
+              "bold italic underline strikethrough | " +
+              "link image media | " +
+              "table tabledelete | tableprops tablerowprops tablecellprops | " +
+              'table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol |' +
+              "tableinsertrowbefore tableinsertrowafter tabledeleterow | " +
+              "tableinsertcolbefore tableinsertcolafter tabledeletecol | " +
+              "align lineheight | checklist numlist bullist indent outdent | " +
+              "removeformat",
             tinycomments_mode: "embedded",
             tinycomments_author: "Author name",
             mergetags_list: [{ value: "About", title: "about" }],
-            ai_request: (request, respondWith) =>
-              respondWith.string(() =>
-                Promise.reject("See docs to implement AI Assistant")
-              ),
+            content_style:
+              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
           }}
           initialValue="Welcome to TinyMCE!"
         />
+
         <div />
 
         <div>

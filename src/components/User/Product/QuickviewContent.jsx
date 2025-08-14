@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useGetProductIdQuery } from "../../../store/eccomerceApi";
 import { IoClose } from "react-icons/io5";
+import { Info } from "lucide-react";
+import { useAddBasketMutation } from "../../../store/eccomerceApi"; 
 
 const colorMapping = {
   Red: "#FF0000",
@@ -45,14 +47,37 @@ const colorMapping = {
 const QuickviewContent = ({ item, closeMenu }) => {
   const [selectedColor, setSelectedColor] = useState();
   const [selectedSize, setSelectedSize] = useState();
+  const [quantity ,setQuantity] = useState(1)
+  const [touched, setTouched] = useState(false);
 
   const navigate = useNavigate();
   const { data: product } = useGetProductIdQuery(item.id);
+  const [addBasket, { isLoading }] = useAddBasketMutation(); 
 
   const handleClick = () => {
-    closeMenu()
-    navigate(`/product/${product?.id}`)
-  }
+    closeMenu();
+    navigate(`/product/${product?.id}`);
+  };
+
+  /* const handleBasket = async () => {
+    setTouched(true);
+    if (selectedSize && selectedColor) {
+      console.log(selectedSize ,selectedColor)
+
+      try {
+        const response = await addBasket({
+          productId: product?.id,
+          quantity,
+
+        }).unwrap();
+        console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
+     
+    }
+  }; */
+
   return (
     <>
       <div className="md:hidden overflow-y-auto h-full">
@@ -71,7 +96,7 @@ const QuickviewContent = ({ item, closeMenu }) => {
             </div>
             <button
               onClick={closeMenu}
-              className="absolute top-2 right-2 z-50 p-1 bg-white/30 rounded-full  "
+              className="absolute top-2 right-2 z-50 p-1 bg-white/30 rounded-full"
             >
               <IoClose size={20} />
             </button>
@@ -85,8 +110,6 @@ const QuickviewContent = ({ item, closeMenu }) => {
             >
               {product?.name}
             </Link>
-
-          
             <div className="flex items-center gap-2">
               {product?.discount > 0 ? (
                 <>
@@ -135,28 +158,47 @@ const QuickviewContent = ({ item, closeMenu }) => {
                 {product?.sizes?.map((size, i) => (
                   <li
                     key={i}
-                    onClick={() => setSelectedSize(size)}
-                    className={`h-12 border rounded-sm flex items-center justify-center cursor-pointer ${
-                      selectedSize === size
-                        ? "border-black bg-black text-white"
-                        : "border-gray-300"
-                    }`}
+                    onClick={() => {
+                      setSelectedSize(size);
+                      setTouched(false);
+                    }}
+                    className={`h-12 border rounded-sm flex items-center justify-center cursor-pointer
+                      ${
+                        selectedSize === size
+                          ? "border-black bg-black text-white"
+                          : touched && !selectedSize
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
                   >
                     {size}
                   </li>
                 ))}
               </ul>
+              {touched && !selectedSize && (
+                <p className="text-red-700 text-sm my-5 flex items-center gap-2">
+                  <Info size={18} /> Please select a size
+                </p>
+              )}
             </div>
+
             <div className="space-y-3 mb-6">
               <div className="flex items-center gap-3">
-                <select className="border basis-[30%] border-gray-200 rounded-sm py-3 px-4 flex-1">
+                <select
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  className="border basis-[30%] border-gray-200 rounded-sm py-3 px-4 flex-1"
+                >
                   <option value="">Qty</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
                 </select>
-                <button className="py-3 basis-[70%] bg-black text-white rounded-sm hover:underline">
-                  Select A Size
+                <button
+                 
+                  className="py-3 basis-[70%] bg-black text-white rounded-sm hover:underline"
+                >
+                  {selectedSize ? "Add to Bag" : "Select A Size"}
                 </button>
               </div>
 
@@ -169,7 +211,6 @@ const QuickviewContent = ({ item, closeMenu }) => {
           </div>
         </div>
       </div>
-
       <div className="hidden md:flex gap-3 h-full">
         <div className="basis-[50%] overflow-y-auto h-screen scrollbar-hidden relative">
           {product?.images?.map((item, i) => (
@@ -211,7 +252,9 @@ const QuickviewContent = ({ item, closeMenu }) => {
                   key={i}
                   onClick={() => setSelectedColor(color)}
                   className={`w-6 h-6 rounded-full border-2 ${
-                    selectedColor === color ? "border-black" : "border-gray-300"
+                    selectedColor === color
+                      ? "border-black bg-black text-white"
+                      : "border-gray-300"
                   } hover:border-black transition-colors`}
                   style={{ backgroundColor: colorMapping[color] }}
                 />
@@ -225,26 +268,45 @@ const QuickviewContent = ({ item, closeMenu }) => {
               {product?.sizes?.map((size, i) => (
                 <li
                   key={i}
-                  onClick={() => setSelectedSize(size)}
-                  className={`w-15 h-12 border rounded-sm flex items-center justify-center cursor-pointer ${
-                    selectedSize === size ? "border-black" : "border-gray-300"
-                  }`}
+                  onClick={() => {
+                    setSelectedSize(size);
+                    setTouched(false);
+                  }}
+                  className={`w-15 h-12 border rounded-sm flex items-center justify-center cursor-pointer
+                    ${
+                      selectedSize === size
+                        ? "border-black bg-black text-white"
+                        : touched && !selectedSize
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                 >
                   {size}
                 </li>
               ))}
             </ul>
+            {touched && !selectedSize && (
+              <p className="text-red-700 text-sm my-5 flex items-center gap-2">
+                <Info size={18} /> Please select a size
+              </p>
+            )}
           </div>
-
           <div className="flex items-center gap-5 py-4">
-            <select className="border basis-[30%] border-gray-200 rounded-sm py-4 px-5">
+            <select
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              className="border basis-[30%] border-gray-200 rounded-sm py-4 px-5"
+            >
               <option value="">Qty</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
             </select>
-            <button className="py-4 basis-[70%] bg-black text-white rounded-sm hover:underline">
-              Select A Size
+            <button
+           
+              className="py-4 basis-[70%] bg-black text-white rounded-sm hover:underline"
+            >
+              {selectedSize ? "Add to Bag" : "Select A Size"}
             </button>
           </div>
 

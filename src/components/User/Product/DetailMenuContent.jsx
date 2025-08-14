@@ -1,5 +1,5 @@
 import React from "react";
-import { IoClose } from "react-icons/io5";
+import { IoClose } from "react-icons/io5"
 
 const DetailMenuContent = ({ product, closeMenu }) => {
   return (
@@ -12,7 +12,7 @@ const DetailMenuContent = ({ product, closeMenu }) => {
       <div className="flex-1 overflow-y-auto scrollbar-hidden p-10">
         {product?.description && (
           <div
-            className="product-description"
+            className="product-description w-2xl"
             dangerouslySetInnerHTML={{ __html: product.description }}
           />
         )}

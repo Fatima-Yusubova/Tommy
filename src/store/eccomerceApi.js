@@ -10,7 +10,6 @@ export const eccomerceApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000/api",
     prepareHeaders: (headers, { getState }) => {
-      // Hər request-də fresh token al
       const token = getToken();
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
@@ -18,7 +17,7 @@ export const eccomerceApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Category", "Product"],
+  tagTypes: ["Category", "Product" ,"Basket"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: ({ email, password }) => ({
@@ -43,8 +42,8 @@ export const eccomerceApi = createApi({
           lastName: lastName,
           email: email,
           password: password,
-          gender : gender ,
-          dateOfBirth :dateOfBirth
+          gender: gender,
+          dateOfBirth: dateOfBirth,
         },
       }),
     }),
@@ -125,10 +124,21 @@ export const eccomerceApi = createApi({
       query: (id) => `product/${id}`,
       providesTags: ["Product"],
     }),
+    addBasket: builder.mutation({
+      query: ({ productId ,quantity }) => {
+        return {
+          method: "post",
+          url: "/basket",
+          body: {productId ,quantity},
+        };
+      },
+      invalidatesTags: ["Basket"],
+    }),
   }),
 });
 
 export const {
+  useAddBasketMutation,
   useSignUpMutation,
   useGetProductIdQuery,
   useGetProductsByIdQuery,
