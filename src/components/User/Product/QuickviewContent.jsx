@@ -51,7 +51,7 @@ const QuickviewContent = ({ item, closeMenu }) => {
   const [touched, setTouched] = useState(false);
 
   const navigate = useNavigate();
-  const { data: product } = useGetProductIdQuery(item.id);
+  const { data: product } = useGetProductIdQuery(item?.id);
   const [addBasket, { isLoading }] = useAddBasketMutation(); 
 
   const handleClick = () => {
