@@ -7,6 +7,7 @@ import "swiper/css/pagination";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import OpenMenu from "../../ui/OpenMenu";
 import QuickviewContent from "./QuickviewContent";
+import { Link } from "react-router";
 
 const colorMapping = {
   Red: "#FF0000",
@@ -110,10 +111,9 @@ const ProductCard = ({ item }) => {
           <Swiper {...swiperConfig} className="w-full h-full product-swiper">
             {item.images.map((img, i) => (
               <SwiperSlide key={i}>
-                <img
-                  className="w-full h-full object-cover"
-                  src={img.url}
-                />
+                <Link to={`/product/${item?.id}`}>
+                  <img className="w-full h-full object-cover" src={img.url} />
+                </Link>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -187,7 +187,7 @@ const ProductCard = ({ item }) => {
                 key={i}
                 className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-gray-300 cursor-pointer hover:border-black hover:scale-110 transition-all duration-200 flex-shrink-0"
                 style={{
-                  backgroundColor: colorMapping[color]
+                  backgroundColor: colorMapping[color],
                 }}
                 title={color}
               />

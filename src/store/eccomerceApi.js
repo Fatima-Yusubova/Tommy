@@ -125,13 +125,11 @@ export const eccomerceApi = createApi({
       providesTags: ["Product"],
     }),
     addBasket: builder.mutation({
-      query: ({ productId, quantity }) => {
-        return {
-          method: "post",
-          url: "/basket",
-          body: { productId, quantity },
-        };
-      },
+      query: ({ id, color, size, quantity }) => ({
+        method: "post",
+        url: `/basket/${id}`,
+        body: { color, size, quantity },
+      }),
       invalidatesTags: ["Basket"],
     }),
     getFilteredProducts: builder.query({
@@ -141,10 +139,23 @@ export const eccomerceApi = createApi({
       }),
       providesTags: ["Product"],
     }),
+    getBasketItems: builder.query({
+      query: () => "/basket",
+      providesTags: ["Basket"],
+    }),
+    deleteBasketItem: builder.mutation({
+      query: (id) => ({
+        method: "delete",
+        url: `/basket/${id}`
+      }),
+      invalidatesTags: ["Basket"],
+    }),
   }),
 });
 
 export const {
+  useDeleteBasketItemMutation,
+  useGetBasketItemsQuery,
   useGetFilteredProductsQuery,
   useAddBasketMutation,
   useSignUpMutation,

@@ -22,7 +22,7 @@ const OpenMenu = ({ open, setOpen, children, width = "max-w-lg" }) => {
 
       <div
         className={`
-          fixed z-[999999] bg-white transition-all duration-500 ease-in-out
+          fixed z-[999999] bg-white transition-all duration-700 ease-in-out
           bottom-0 left-0 right-0 max-h-[100vh] h-[100vh] 
           ${open ? "translate-y-0" : "translate-y-full"}
           md:top-0 md:right-0 md:bottom-auto md:left-auto 

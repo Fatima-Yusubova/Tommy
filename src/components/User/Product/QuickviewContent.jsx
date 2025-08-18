@@ -53,30 +53,33 @@ const QuickviewContent = ({ item, closeMenu }) => {
   const navigate = useNavigate();
   const { data: product } = useGetProductIdQuery(item?.id);
   const [addBasket, { isLoading }] = useAddBasketMutation(); 
+  //console.log(product?.id)
 
   const handleClick = () => {
     closeMenu();
     navigate(`/product/${product?.id}`);
-  };
+  }
+const handleBasket = async (id) => {
+  if (!selectedColor || !selectedSize) {
+    setTouched(true)
+    return;
+  }
 
-  /* const handleBasket = async () => {
-    setTouched(true);
-    if (selectedSize && selectedColor) {
-      console.log(selectedSize ,selectedColor)
+  try {
+    const response = await addBasket({
+      id: id,
+      color: selectedColor,
+      size: selectedSize,
+      quantity: quantity,
+    })
+    closeMenu()
 
-      try {
-        const response = await addBasket({
-          productId: product?.id,
-          quantity,
+    console.log(response)
+  } catch (error) {
+    console.error(error)
+  }
+};
 
-        }).unwrap();
-        console.log(response)
-      } catch (error) {
-        console.log(error)
-      }
-     
-    }
-  }; */
 
   return (
     <>
@@ -195,7 +198,7 @@ const QuickviewContent = ({ item, closeMenu }) => {
                   <option value="3">3</option>
                 </select>
                 <button
-                 
+                 onClick={() =>handleBasket(product?.id)}
                   className="py-3 basis-[70%] bg-black text-white rounded-sm hover:underline"
                 >
                   {selectedSize ? "Add to Bag" : "Select A Size"}
@@ -303,7 +306,7 @@ const QuickviewContent = ({ item, closeMenu }) => {
               <option value="3">3</option>
             </select>
             <button
-           
+              onClick={() =>handleBasket(product?.id)}
               className="py-4 basis-[70%] bg-black text-white rounded-sm hover:underline"
             >
               {selectedSize ? "Add to Bag" : "Select A Size"}
