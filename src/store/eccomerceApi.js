@@ -17,7 +17,7 @@ export const eccomerceApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Category", "Product" ,"Basket"],
+  tagTypes: ["Category", "Product", "Basket"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: ({ email, password }) => ({
@@ -125,19 +125,27 @@ export const eccomerceApi = createApi({
       providesTags: ["Product"],
     }),
     addBasket: builder.mutation({
-      query: ({ productId ,quantity }) => {
+      query: ({ productId, quantity }) => {
         return {
           method: "post",
           url: "/basket",
-          body: {productId ,quantity},
+          body: { productId, quantity },
         };
       },
       invalidatesTags: ["Basket"],
+    }),
+    getFilteredProducts: builder.query({
+      query: (filters) => ({
+        url: "/product/filter",
+        params: filters,
+      }),
+      providesTags: ["Product"],
     }),
   }),
 });
 
 export const {
+  useGetFilteredProductsQuery,
   useAddBasketMutation,
   useSignUpMutation,
   useGetProductIdQuery,
