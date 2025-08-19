@@ -8,6 +8,7 @@ import Category from "../pages/Admin/Category";
 import Product from "../pages/Admin/Product";
 import CategoryPage from "../pages/User/CategoryPage";
 import ProductDetail from "../pages/User/ProductDetail";
+import BasketPage from "../pages/User/BasketPage";
 
 export const route = createBrowserRouter(
   createRoutesFromElements(
@@ -17,6 +18,7 @@ export const route = createBrowserRouter(
         <Route index element={<Home />}></Route>
         <Route path="/category/:categoryId" element={<CategoryPage/>} />
         <Route path="/product/:id" element={<ProductDetail/>}/>
+        <Route path="/basket" element={<BasketPage/>}/>
       </Route>
       <Route
         path="/admin"

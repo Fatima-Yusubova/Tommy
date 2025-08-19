@@ -5,7 +5,7 @@ import { HiOutlineShoppingBag } from "react-icons/hi";
 import { useGetBasketItemsQuery } from "../../../store/eccomerceApi";
 import UserMenu from "./UserMenu";
 import OpenMenu from "../../ui/OpenMenu";
-import BasketContent from "../Product/BasketContent";
+import BasketMenu from "../Product/BasketMenu";
 
 const Action = () => {
   const [bagOpen, setBagOpen] = useState(false);
@@ -35,7 +35,7 @@ const Action = () => {
       </div>
 
       <OpenMenu open={bagOpen} setOpen={setBagOpen}>
-       <BasketContent basketItems={basketItems} setBagOpen={setBagOpen}/>
+        <BasketMenu basketItems={basketItems} setBagOpen={setBagOpen} />
       </OpenMenu>
 
       {userOpen && (
