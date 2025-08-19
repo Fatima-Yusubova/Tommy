@@ -146,7 +146,15 @@ export const eccomerceApi = createApi({
     deleteBasketItem: builder.mutation({
       query: (id) => ({
         method: "delete",
-        url: `/basket/${id}`
+        url: `/basket/${id}`,
+      }),
+      invalidatesTags: ["Basket"],
+    }),
+    updateBasketItem: builder.mutation({
+      query: ({ id, quantity }) => ({
+        method: "post",
+        url: `/basket/${id}`,
+        body: { quantity },
       }),
       invalidatesTags: ["Basket"],
     }),
@@ -154,6 +162,7 @@ export const eccomerceApi = createApi({
 });
 
 export const {
+  useUpdateBasketItemMutation,
   useDeleteBasketItemMutation,
   useGetBasketItemsQuery,
   useGetFilteredProductsQuery,

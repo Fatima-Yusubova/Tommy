@@ -1,20 +1,20 @@
-// src/components/User/Header/Action.jsx
 import React, { useState } from "react";
 import { CgSearch } from "react-icons/cg";
 import { LuUserRound } from "react-icons/lu";
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { useGetBasketItemsQuery } from "../../../store/eccomerceApi";
-
-import BasketMenu from "./BasketMenu";
 import UserMenu from "./UserMenu";
+import OpenMenu from "../../ui/OpenMenu";
+import BasketContent from "../Product/BasketContent";
 
 const Action = () => {
-  const [bagOpen, setBagOpen] = useState(false)
-  const [userOpen ,setUserOpen] = useState(false)
+  const [bagOpen, setBagOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
 
-  const {data:basketItems} = useGetBasketItemsQuery()
+  const { data: basketItems } = useGetBasketItemsQuery();
 
-  console.log(basketItems)
+  console.log(basketItems);
+
   return (
     <>
       <div className="flex items-center gap-5 relative">
@@ -22,23 +22,29 @@ const Action = () => {
           <CgSearch size={20} />
         </button>
         <button onClick={() => setUserOpen((prev) => !prev)}>
-          <LuUserRound size={20} />{" "}
+          <LuUserRound size={20} />
         </button>
         <button className="relative" onClick={() => setBagOpen(true)}>
           <HiOutlineShoppingBag size={20} />
         </button>
         {basketItems && (
-          <span className="absolute -top-2 -right-2 bg-black !text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{basketItems?.[0].totalItems}</span>
+          <span className="absolute -top-2 -right-2 bg-black !text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+            {basketItems?.[0].totalItems}
+          </span>
         )}
       </div>
-      <BasketMenu bagOpen={bagOpen} setBagOpen={setBagOpen} basketItems={basketItems}/>
+
+      <OpenMenu open={bagOpen} setOpen={setBagOpen}>
+       <BasketContent basketItems={basketItems} setBagOpen={setBagOpen}/>
+      </OpenMenu>
+
       {userOpen && (
-        <div className=" absolute z-30 right-0 top-[110px]">
+        <div className="absolute z-30 right-0 top-[110px]">
           <UserMenu />
         </div>
       )}
     </>
   );
-}
+};
 
 export default Action;

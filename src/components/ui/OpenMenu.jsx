@@ -32,8 +32,7 @@ const OpenMenu = ({ open, setOpen, children, width = "max-w-lg" }) => {
         `}
       >
         <div className="flex items-start  h-full">
-       
-          <div className="flex-1 overflow-y-auto">{children}</div>
+          <div className="flex-1 overflow-y-auto scrollbar-hidden max-h-full">{children}</div>
           <div className="hidden md:flex items-center justify-between ">
             <button
               onClick={() => setOpen(false)}

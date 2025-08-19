@@ -193,12 +193,14 @@ const handleBasket = async (id) => {
                   className="border basis-[30%] border-gray-200 rounded-sm py-3 px-4 flex-1"
                 >
                   <option value="">Qty</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
+                  {Array.from({ length: product?.stock || 0 }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1}
+                    </option>
+                  ))}
                 </select>
                 <button
-                 onClick={() =>handleBasket(product?.id)}
+                  onClick={() => handleBasket(product?.id)}
                   className="py-3 basis-[70%] bg-black text-white rounded-sm hover:underline"
                 >
                   {selectedSize ? "Add to Bag" : "Select A Size"}
@@ -297,16 +299,18 @@ const handleBasket = async (id) => {
           <div className="flex items-center gap-5 py-4">
             <select
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="border basis-[30%] border-gray-200 rounded-sm py-4 px-5"
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className="border basis-[30%] border-gray-200 rounded-sm py-3 px-4 flex-1"
             >
               <option value="">Qty</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
+              {Array.from({ length: product?.stock || 0 }, (_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
+              ))}
             </select>
             <button
-              onClick={() =>handleBasket(product?.id)}
+              onClick={() => handleBasket(product?.id)}
               className="py-4 basis-[70%] bg-black text-white rounded-sm hover:underline"
             >
               {selectedSize ? "Add to Bag" : "Select A Size"}
