@@ -1,5 +1,5 @@
 import { Check, ChevronDown, Info, InfoIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import BasketItems from "../../components/User/Product/BasketItems";
 import { useGetBasketItemsQuery } from "../../store/eccomerceApi";
 
@@ -39,7 +39,7 @@ const BasketPage = () => {
           </div>
 
           <div className="my-5 border-gray-300 border-t border-b py-4">
-            <BasketItems basketItems={basketItems} flag={true} />
+            <BasketItems basketItems={basketItems}/>
           </div>
         </div>
         <div className="w-full xl:basis-[25%]">

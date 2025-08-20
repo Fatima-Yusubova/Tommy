@@ -55,23 +55,26 @@ const ProductCard = ({ item }) => {
   const [view, setView] = useState(false);
 
   const handleMouseEnter = () => {
-    setHovered(true);
+    setHovered(true)
     if (swiper && item?.images?.length > 1) {
       swiper.slideTo(1, 300);
       setCurrentSlide(1);
     }
   };
+
   const handleMouseLeave = () => {
-    setHovered(false);
+    setHovered(false)
     if (swiper) {
       swiper.slideTo(0, 300);
-      setCurrentSlide(0);
+      setCurrentSlide(0)
     }
-  };
+  }
+
   const goToNext = (e) => {
     e.stopPropagation();
     if (swiper) swiper.slideNext();
-  };
+  }
+
   const goToPrev = (e) => {
     e.stopPropagation();
     if (swiper) swiper.slidePrev();
@@ -88,7 +91,7 @@ const ProductCard = ({ item }) => {
       dynamicBullets: false,
     },
     loop: false,
-    speed: 2,
+    speed: 300,
     onSwiper: (swiper) => setSwiper(swiper),
     onSlideChange: (swiper) => setCurrentSlide(swiper.activeIndex),
     allowTouchMove: true,
@@ -101,24 +104,30 @@ const ProductCard = ({ item }) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {!hovered || !item?.images || item.images.length <= 1 ? (
-          <img
-            className="w-full h-full object-cover"
-            src={item?.images?.[0]?.url}
-            alt={item?.name || "Product image"}
-          />
-        ) : (
+      
+        {item?.images?.length > 1 ? (
           <Swiper {...swiperConfig} className="w-full h-full product-swiper">
             {item.images.map((img, i) => (
               <SwiperSlide key={i}>
                 <Link to={`/product/${item?.id}`}>
-                  <img className="w-full h-full object-cover" src={img.url} />
+                  <img
+                    className="w-full h-full object-cover"
+                    src={img.url}
+                    alt={item?.name || `Product image ${i + 1}`}
+                  />
                 </Link>
               </SwiperSlide>
             ))}
           </Swiper>
+        ) : (
+          <Link to={`/product/${item?.id}`}>
+            <img
+              className="w-full h-full object-cover"
+              src={item?.images?.[0]?.url}
+              alt={item?.name || "Product image"}
+            />
+          </Link>
         )}
-
         {hovered && item?.images?.length > 1 && (
           <>
             <button
@@ -135,7 +144,6 @@ const ProductCard = ({ item }) => {
             </button>
           </>
         )}
-
         {hovered && (
           <div className="hidden lg:flex absolute inset-0 z-5 items-center justify-center">
             <button
@@ -156,9 +164,22 @@ const ProductCard = ({ item }) => {
             +
           </button>
         </div>
+        {item?.images?.length > 1 && hovered && (
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1">
+            {item.images.map((_, index) => (
+              <div
+                key={index}
+                className={`w-7 h-0.5 rounded-md transition-colors ${
+                  index === currentSlide ? "bg-gray-700" : "bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
       <div className="p-2 sm:p-3 space-y-2 min-h-[80px] sm:min-h-[90px]">
-        <h3 className="text-sm sm:text-base font-medium leading-tight line-clamp-2 text-gray-900">
+        <h3 className="text-sm font-medium leading-tight line-clamp-2 text-gray-900">
           {item?.name}
         </h3>
         <div className="flex flex-wrap items-center gap-1 sm:gap-2">
@@ -175,7 +196,7 @@ const ProductCard = ({ item }) => {
               </span>
             </>
           ) : (
-            <span className="text-black font-medium text-sm sm:text-base">
+            <span className="text-black font-medium text-sm">
               ${item?.price}
             </span>
           )}

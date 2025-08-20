@@ -1,11 +1,11 @@
 import { MinusIcon, PlusIcon } from "lucide-react";
-import React from "react";
-import {useDeleteBasketItemMutation,useUpdateBasketItemMutation} from "../../../store/eccomerceApi";
-
-const BasketItems = ({ basketItems ,flag=false}) => {
-  const [deleteBasketItem] = useDeleteBasketItemMutation();
-  const [updateBasketItem] = useUpdateBasketItemMutation();
-
+import React, { useState } from "react";
+import {useDeleteBasketItemMutation,  useUpdateBasketItemMutation} from "../../../store/eccomerceApi";
+import OpenMenu from "../../ui/OpenMenu";
+import EditContent from "./EditContent";
+const BasketItems = ({ basketItems}) => {
+  const [deleteBasketItem] = useDeleteBasketItemMutation()
+  const [updateBasketItem] = useUpdateBasketItemMutation()
   const handleDeleteBasket = async (id) => {
     try {
       let response = await deleteBasketItem(id);
@@ -16,21 +16,11 @@ const BasketItems = ({ basketItems ,flag=false}) => {
   };
 
   const updateQuantity = async (id, quantity) => {
-    //console.log(id);
     try {
       const response = await updateBasketItem({ id, quantity });
       console.log(response);
     } catch (error) {
       console.log(error);
-    }
-  };
-  const editBasketItem = async(id) =>{
-    console.log(id)
-    try {
-      const response = await updateBasketItem({id ,quantity,size ,color})
-      console.log(response)
-    } catch (error) {
-      console.log(error)
     }
   }
 
@@ -73,9 +63,6 @@ const BasketItems = ({ basketItems ,flag=false}) => {
                     </button>
                   </div>
                   <div className="flex items-center gap-10 justify-between mt-4">
-                    {flag && (
-                      <button onClick={() =>editBasketItem(item?.product?.id)} className="text-[#464C52] underline">Edit</button>
-                    )}
                     <button
                       onClick={() => handleDeleteBasket(item?.product?.id)}
                       className="text-[#464C52] underline"
@@ -96,5 +83,4 @@ const BasketItems = ({ basketItems ,flag=false}) => {
     </div>
   );
 };
-
 export default BasketItems;

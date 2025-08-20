@@ -249,7 +249,7 @@ const handleBasket = async (id) => {
           </div>
 
           <div>
-            <span className="text-[#464C52] text-sm">Color</span>{" "}
+            <span className="text-[#464C52] text-sm">Color</span>
             <span className="text-sm">{selectedColor}</span>
             <div className="flex gap-3 my-8">
               {product?.colors?.map((color, i) => (

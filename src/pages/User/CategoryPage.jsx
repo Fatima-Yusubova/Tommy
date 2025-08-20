@@ -29,7 +29,7 @@ filters.sort !==null
 const { data: filteredProducts } = useGetFilteredProductsQuery(filters, {skip: !actvFilter})
 const filteredByCategory = actvFilter ? filteredProducts?.filter((item) => +item.category.id === +categoryId): ''
 const displayProducts = actvFilter? filteredByCategory : allCategoryProducts
-const sorts = ["Recommended","Price Low To High","Price High to Low","Only sale"]
+const sorts = ["Recommended","Price Low To High","Price High to Low"]
 const priceRanges = [
   { label: "$0 - $50", min: 0, max: 25 },
   { label: "$50 - $100", min: 50, max: 100 },
