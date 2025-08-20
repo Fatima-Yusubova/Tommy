@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useGetProductIdQuery } from "../../store/eccomerceApi";
+import {
+  useGetProductIdQuery,
+  useAddBasketMutation,
+} from "../../store/eccomerceApi";
 import { Link, useParams } from "react-router";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Info } from "lucide-react";
 import DetailMenu from "../../components/User/Product/DetailMenuContent";
 import OpenMenu from "../../components/ui/OpenMenu";
 import DetailMenuContent from "../../components/User/Product/DetailMenuContent";
@@ -48,10 +51,33 @@ const colorMapping = {
 const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState();
   const [selectedSize, setSelectedSize] = useState();
-  const [flag ,setFlag] = useState(false)
+  const [quantity, setQuantity] = useState(1);
+  const [touched, setTouched] = useState(false);
+  const [flag, setFlag] = useState(false);
 
   const { id } = useParams();
   const { data: product } = useGetProductIdQuery(id);
+  const [addBasket, { isLoading }] = useAddBasketMutation();
+
+  const handleBasket = async (id) => {
+    if (!selectedColor || !selectedSize) {
+      setTouched(true);
+      return;
+    }
+
+    try {
+      const response = await addBasket({
+        id: id,
+        color: selectedColor,
+        size: selectedSize,
+        quantity: quantity,
+      });
+
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="flex gap-[100px] flex-col md:flex-row py-10">
@@ -73,13 +99,30 @@ const ProductDetail = () => {
       <div className="sticky w-full md:basis-[40%]  top-10 self-start px-10 md:pr-20 py-10 h-fit">
         <h5 className="py-4 text-xs">Tommy Hilfiger</h5>
         <Link className="text-xl ">{product?.name}</Link>
-        <p className="py-5"> $ {product?.price}</p>
+
+        <div className="flex items-center gap-2 py-5">
+          {product?.discount > 0 ? (
+            <>
+              <span className="text-[#484848] text-lg line-through">
+                ${product?.price}
+              </span>
+              <span className="text-black font-medium">
+                ${(product?.price * (1 - product?.discount / 100)).toFixed(2)}
+              </span>
+              <span className="text-[#464C52] text-lg">
+                {product?.discount}% off
+              </span>
+            </>
+          ) : (
+            <span className="text-black font-medium">${product?.price}</span>
+          )}
+        </div>
 
         <div>
           <span className="text-[#464C52] text-sm">Color</span>{" "}
           <span className="text-sm">{selectedColor}</span>
           <div className="flex gap-3 my-8">
-            {product?.colors.map((color, i) => (
+            {product?.colors?.map((color, i) => (
               <button
                 key={i}
                 onClick={() => setSelectedColor(color)}
@@ -90,31 +133,65 @@ const ProductDetail = () => {
               />
             ))}
           </div>
+          {touched && !selectedColor && (
+            <p className="text-red-700 text-sm mb-3 flex items-center gap-2">
+              <Info size={18} /> Please select a color
+            </p>
+          )}
         </div>
+
         <div>
           <p className="text-[#464C52] text-sm py-5">Size</p>
           <ul className="flex items-center gap-3 flex-wrap">
             {product?.sizes?.map((size, i) => (
               <li
                 key={i}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => {
+                  setSelectedSize(size);
+                  setTouched(false);
+                }}
                 className={`w-20 h-12 border rounded-sm flex items-center justify-center cursor-pointer ${
-                  selectedSize === size ? "border-black bg-black text-white" : "border-gray-300"
+                  selectedSize === size
+                    ? "border-black bg-black text-white"
+                    : touched && !selectedSize
+                    ? "border-red-500"
+                    : "border-gray-300"
                 }`}
               >
                 {size}
               </li>
             ))}
           </ul>
+          {touched && !selectedSize && (
+            <p className="text-red-700 text-sm my-5 flex items-center gap-2">
+              <Info size={18} /> Please select a size
+            </p>
+          )}
         </div>
 
         <div className="flex items-center gap-5 py-4">
-          <select className="border border-gray-200 rounded-sm py-4 px-5">
+          <select
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            className="border border-gray-200 rounded-sm py-4 px-5"
+          >
             <option value="">Qty</option>
-            <option value="">1</option>
+            {Array.from({ length: product?.stock || 0 }, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1}
+              </option>
+            ))}
           </select>
-          <button className="py-3 w-full bg-black text-white rounded-sm hover:underline">
-            {selectedSize ? "Add to Cart" : "Select A Size"}
+          <button
+            onClick={() => handleBasket(product?.id)}
+            disabled={isLoading}
+            className="py-3 w-full bg-black text-white rounded-sm hover:underline disabled:opacity-50"
+          >
+            {isLoading
+              ? "Adding..."
+              : selectedSize
+              ? "Add to Cart"
+              : "Select A Size"}
           </button>
         </div>
 
@@ -126,11 +203,7 @@ const ProductDetail = () => {
             <p className="text-[#464C52] text-sm">4 payments of $13.43 with </p>
             <img className="w-12" src="/assets/img/Klarna.svg" alt="Klarna" />
             or
-            <img
-              className="w-16"
-              src="/assets/img/afterpay.svg"
-           
-            />
+            <img className="w-16" src="/assets/img/afterpay.svg" />
           </div>
         </div>
         <div>
@@ -142,7 +215,10 @@ const ProductDetail = () => {
           </div>
 
           <OpenMenu open={flag} setOpen={setFlag} width="max-w-4xl">
-            <DetailMenuContent product={product} closeMenu={() => setFlag(false)} />
+            <DetailMenuContent
+              product={product}
+              closeMenu={() => setFlag(false)}
+            />
           </OpenMenu>
 
           <div className="flex w-full justify-between items-center mb-5">

@@ -16,7 +16,7 @@ const BasketMenu = ({ basketItems, setBagOpen }) => {
         </button>
       </div>
 
-      <BasketItems basketItems={basketItems} />
+      <BasketItems basketItems={basketItems} flag={false} />
 
       <div className="border-t border-t-gray-200 p-6 flex-shrink-0">
         <div className="flex items-center justify-between text-[16px] font-medium mb-4">

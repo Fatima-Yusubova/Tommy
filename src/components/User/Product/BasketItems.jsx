@@ -1,11 +1,8 @@
 import { MinusIcon, PlusIcon } from "lucide-react";
 import React from "react";
-import {
-  useDeleteBasketItemMutation,
-  useUpdateBasketItemMutation,
-} from "../../../store/eccomerceApi";
+import {useDeleteBasketItemMutation,useUpdateBasketItemMutation} from "../../../store/eccomerceApi";
 
-const BasketItems = ({ basketItems }) => {
+const BasketItems = ({ basketItems ,flag=false}) => {
   const [deleteBasketItem] = useDeleteBasketItemMutation();
   const [updateBasketItem] = useUpdateBasketItemMutation();
 
@@ -19,7 +16,7 @@ const BasketItems = ({ basketItems }) => {
   };
 
   const updateQuantity = async (id, quantity) => {
-    console.log(id);
+    //console.log(id);
     try {
       const response = await updateBasketItem({ id, quantity });
       console.log(response);
@@ -27,6 +24,15 @@ const BasketItems = ({ basketItems }) => {
       console.log(error);
     }
   };
+  const editBasketItem = async(id) =>{
+    console.log(id)
+    try {
+      const response = await updateBasketItem({id ,quantity,size ,color})
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-hidden min-h-0 px-6">
@@ -50,26 +56,33 @@ const BasketItems = ({ basketItems }) => {
                   <p className="text-[#464C52] pt-2">$ {item?.price}</p>
                 </div>
 
-                <div className="flex justify-between mt-4">
+                <div className="mt-4">
                   <div className="flex items-center gap-2">
                     <button
+                      className="w-4 h-4 flex items-center justify-center bg-black text-white rounded-full"
                       onClick={() => updateQuantity(item?.product?.id, 1)}
                     >
                       <PlusIcon />
                     </button>
                     <span>{item?.quantity}</span>
                     <button
+                      className="w-4 h-4 flex items-center justify-center bg-black text-white rounded-full"
                       onClick={() => updateQuantity(item?.product?.id, -1)}
                     >
                       <MinusIcon />
                     </button>
                   </div>
-                  <button
-                    onClick={() => handleDeleteBasket(item?.product?.id)}
-                    className="text-[#464C52] underline"
-                  >
-                    Remove
-                  </button>
+                  <div className="flex items-center gap-10 justify-between mt-4">
+                    {flag && (
+                      <button onClick={() =>editBasketItem(item?.product?.id)} className="text-[#464C52] underline">Edit</button>
+                    )}
+                    <button
+                      onClick={() => handleDeleteBasket(item?.product?.id)}
+                      className="text-[#464C52] underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

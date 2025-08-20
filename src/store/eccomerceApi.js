@@ -151,10 +151,10 @@ export const eccomerceApi = createApi({
       invalidatesTags: ["Basket"],
     }),
     updateBasketItem: builder.mutation({
-      query: ({ id, quantity }) => ({
+      query: ({ id, quantity ,size ,color }) => ({
         method: "post",
         url: `/basket/${id}`,
-        body: { quantity },
+        body: { quantity ,size ,color },
       }),
       invalidatesTags: ["Basket"],
     }),

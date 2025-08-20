@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useGetAllCategoryQuery } from "../../../store/eccomerceApi";
 import { useAddProductMutation } from "../../../store/eccomerceApi";
-import { useUploadImagesMutation } from "../../../store/eccomerceApi"; // yol sənə uyğun dəyiş
+import { useUploadImagesMutation } from "../../../store/eccomerceApi"; 
 import { toast } from "react-toastify";
 import { Editor } from "@tinymce/tinymce-react";
 
