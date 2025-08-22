@@ -41,7 +41,7 @@ const FilterContent = ({
   };
 
   return (
-    <div className="relative h-full p-4 my-5 md:ml-6 w-full md:w-sm">
+    <div className="relative h-full p-4 my-5 md:ml-6 w-full ">
       <div className="border-b border-gray-300">
         <button
           onClick={closeMenu}

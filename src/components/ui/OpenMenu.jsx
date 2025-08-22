@@ -26,7 +26,7 @@ const OpenMenu = ({ open, setOpen, children, width = "max-w-4xl" }) => {
     inset-0 w-full h-screen
     ${open ? "translate-y-0" : "translate-y-full"}
     md:top-0 md:right-0 md:bottom-auto md:left-auto 
-    md:w-[600px] md:h-screen md:rounded-none
+    md:max-w-3xl md:h-screen md:rounded-none
     ${open ? "md:translate-x-0" : "md:translate-x-full"}
     md:translate-y-0
   `}

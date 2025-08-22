@@ -156,7 +156,7 @@ const ProductCard = ({ item }) => {
           </div>
         )}
 
-        <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 lg:hidden">
+        <div className="absolute bottom-2 z-5 right-2 sm:bottom-3 sm:right-3 lg:hidden">
           <button
             onClick={() => setView(true)}
             className="bg-white w-5 h-5 sm:w-6 sm:h-6 border-gray-400 border flex items-center justify-center rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
