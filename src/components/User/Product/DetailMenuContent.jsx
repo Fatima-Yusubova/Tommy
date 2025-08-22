@@ -12,7 +12,7 @@ const DetailMenuContent = ({ product, closeMenu }) => {
       <div className="flex-1 overflow-y-auto scrollbar-hidden p-10">
         {product?.description && (
           <div
-            className="product-description w-2xl"
+            className="product-description "
             dangerouslySetInnerHTML={{ __html: product.description }}
           />
         )}

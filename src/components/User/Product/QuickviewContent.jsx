@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { useGetProductIdQuery } from "../../../store/eccomerceApi";
 import { IoClose } from "react-icons/io5";
 import { Info } from "lucide-react";
-import { useAddBasketMutation } from "../../../store/eccomerceApi"; 
+import { useAddBasketMutation } from "../../../store/eccomerceApi";
 
 const colorMapping = {
   Red: "#FF0000",
@@ -47,39 +47,42 @@ const colorMapping = {
 const QuickviewContent = ({ item, closeMenu }) => {
   const [selectedColor, setSelectedColor] = useState();
   const [selectedSize, setSelectedSize] = useState();
-  const [quantity ,setQuantity] = useState(1)
+  const [quantity, setQuantity] = useState(1);
   const [touched, setTouched] = useState(false);
-
   const navigate = useNavigate();
   const { data: product } = useGetProductIdQuery(item?.id);
-  const [addBasket, { isLoading }] = useAddBasketMutation(); 
-  //console.log(product?.id)
+  const [addBasket, { isLoading }] = useAddBasketMutation();
+
+  useEffect(() => {
+    if (product && (!product.sizes || product.sizes.length === 0)) {
+      setSelectedSize("One Size");
+    }
+  }, [product]);
 
   const handleClick = () => {
     closeMenu();
     navigate(`/product/${product?.id}`);
-  }
-const handleBasket = async (id) => {
-  if (!selectedColor || !selectedSize) {
-    setTouched(true)
-    return;
-  }
+  };
 
-  try {
-    const response = await addBasket({
-      id: id,
-      color: selectedColor,
-      size: selectedSize,
-      quantity: quantity,
-    })
-    closeMenu()
+  const handleBasket = async (id) => {
+    if (product?.sizes?.length > 0 && !selectedSize) {
+      setTouched(true);
+      return;
+    }
 
-    console.log(response)
-  } catch (error) {
-    console.error(error)
-  }
-};
-
+    try {
+      const response = await addBasket({
+        id,
+        color: selectedColor,
+        size: selectedSize || "One Size",
+        quantity,
+      });
+      closeMenu();
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -157,34 +160,40 @@ const handleBasket = async (id) => {
 
             <div className="mb-6">
               <p className="text-[#464C52] text-sm mb-3">Size</p>
-              <ul className="grid grid-cols-4 gap-3">
-                {product?.sizes?.map((size, i) => (
-                  <li
-                    key={i}
-                    onClick={() => {
-                      setSelectedSize(size);
-                      setTouched(false);
-                    }}
-                    className={`h-12 border rounded-sm flex items-center justify-center cursor-pointer
-                      ${
-                        selectedSize === size
-                          ? "border-black bg-black text-white"
-                          : touched && !selectedSize
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                  >
-                    {size}
-                  </li>
-                ))}
-              </ul>
-              {touched && !selectedSize && (
+              {product?.sizes?.length > 0 ? (
+                <ul className="grid grid-cols-4 gap-3">
+                  {product?.sizes?.map((size, i) => (
+                    <li
+                      key={i}
+                      onClick={() => {
+                        setSelectedSize(size);
+                        setTouched(false);
+                      }}
+                      className={`h-12 border rounded-sm flex items-center justify-center cursor-pointer
+                        ${
+                          selectedSize === size
+                            ? "border-black bg-black text-white"
+                            : touched && !selectedSize
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        }`}
+                    >
+                      {size}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm font-medium">One Size</p>
+              )}
+
+              {touched && !selectedSize && product?.sizes?.length > 0 && (
                 <p className="text-red-700 text-sm my-5 flex items-center gap-2">
                   <Info size={18} /> Please select a size
                 </p>
               )}
             </div>
 
+            {/* Basket */}
             <div className="space-y-3 mb-6">
               <div className="flex items-center gap-3">
                 <select
@@ -216,6 +225,7 @@ const handleBasket = async (id) => {
           </div>
         </div>
       </div>
+
       <div className="hidden md:flex gap-3 h-full">
         <div className="basis-[50%] overflow-y-auto h-screen scrollbar-hidden relative">
           {product?.images?.map((item, i) => (
@@ -247,7 +257,6 @@ const handleBasket = async (id) => {
               <span className="text-black font-medium">${product?.price}</span>
             )}
           </div>
-
           <div>
             <span className="text-[#464C52] text-sm">Color</span>
             <span className="text-sm">{selectedColor}</span>
@@ -266,31 +275,35 @@ const handleBasket = async (id) => {
               ))}
             </div>
           </div>
-
           <div>
             <p className="text-[#464C52] text-sm py-5">Size</p>
-            <ul className="grid grid-cols-5 gap-3">
-              {product?.sizes?.map((size, i) => (
-                <li
-                  key={i}
-                  onClick={() => {
-                    setSelectedSize(size);
-                    setTouched(false);
-                  }}
-                  className={`w-15 h-12 border rounded-sm flex items-center justify-center cursor-pointer
-                    ${
-                      selectedSize === size
-                        ? "border-black bg-black text-white"
-                        : touched && !selectedSize
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                >
-                  {size}
-                </li>
-              ))}
-            </ul>
-            {touched && !selectedSize && (
+            {product?.sizes?.length > 0 ? (
+              <ul className="grid grid-cols-5 gap-3">
+                {product?.sizes?.map((size, i) => (
+                  <li
+                    key={i}
+                    onClick={() => {
+                      setSelectedSize(size);
+                      setTouched(false);
+                    }}
+                    className={`w-15 h-12 border rounded-sm flex items-center justify-center cursor-pointer
+                      ${
+                        selectedSize === size
+                          ? "border-black bg-black text-white"
+                          : touched && !selectedSize
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      }`}
+                  >
+                    {size}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm font-medium">One Size</p>
+            )}
+
+            {touched && !selectedSize && product?.sizes?.length > 0 && (
               <p className="text-red-700 text-sm my-5 flex items-center gap-2">
                 <Info size={18} /> Please select a size
               </p>
@@ -316,7 +329,6 @@ const handleBasket = async (id) => {
               {selectedSize ? "Add to Bag" : "Select A Size"}
             </button>
           </div>
-
           <div>
             <button
               className="w-full py-4 border border-black rounded-sm mt-5 hover:underline"

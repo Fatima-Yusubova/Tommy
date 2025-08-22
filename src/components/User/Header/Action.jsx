@@ -58,13 +58,10 @@ const Action = () => {
         </button>
       </div>
 
-      <OpenMenu open={searchOpen} setOpen={setSearchOpen}>
+      <OpenMenu open={searchOpen} setOpen={setSearchOpen} width="max-w-lg">
         <div className="w-full h-full flex flex-col bg-white">
           <div className="flex justify-end p-6 border-b border-gray-200">
-            <button
-              onClick={() => setSearchOpen(false)}
-              className="md:hidden"
-            >
+            <button onClick={() => setSearchOpen(false)} className="md:hidden">
               <X size={24} />
             </button>
           </div>
@@ -98,7 +95,8 @@ const Action = () => {
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700 hover:shadow-md"
                   }`}
                   onClick={() => setSelectedCategory("All")}
-                >All
+                >
+                  All
                 </button>
                 {categories?.map((category) => (
                   <button
@@ -122,8 +120,7 @@ const Action = () => {
                 </h3>
                 {filteredProducts?.length > 0 && (
                   <span className="text-sm text-gray-500">
-                    {filteredProducts?.length} item
-                    {filteredProducts?.length !== 1 ? "s" : ""} found
+                    {filteredProducts?.length} items found
                   </span>
                 )}
               </div>
@@ -155,7 +152,7 @@ const Action = () => {
                         )}
                       </div>
                       <button className="text-gray-400 group-hover:text-gray-600 transition-colors">
-                        <ChevronRight/>
+                        <ChevronRight />
                       </button>
                     </Link>
                   ))}
@@ -189,13 +186,11 @@ const Action = () => {
         </div>
       </OpenMenu>
 
-      {/* Mobile Menu */}
       <OpenMenu open={menuOpen} setOpen={setMenuOpen}>
         <MobileNavbar setMenuOpen={setMenuOpen} />
       </OpenMenu>
 
-      {/* Basket Menu */}
-      <OpenMenu open={bagOpen} setOpen={setBagOpen}>
+      <OpenMenu open={bagOpen} setOpen={setBagOpen} width="max-w-md">
         <BasketMenu basketItems={basketItems} setBagOpen={setBagOpen} />
       </OpenMenu>
 
