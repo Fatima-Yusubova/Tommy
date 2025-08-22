@@ -46,7 +46,7 @@ const colorMapping = {
   Emerald: "#50C878",
   Ruby: "#E0115F",
   Sapphire: "#0F52BA",
-};
+}
 
 const ProductCard = ({ item }) => {
   const [hovered, setHovered] = useState(false);

@@ -152,7 +152,7 @@ const AddProduct = ({ setOpen }) => {
           Description
         </label>
         <Editor
-          apiKey="ahgi51rrvah32ha9wv3ceygrba65648m382n46iti20jhor6"
+          apiKey="flp192gttyzhe1hyu2ylvjp1fs2o2tyivx2thkbzobqpytxe"
           value={description}
           onEditorChange={(content) => setDescription(content)}
           init={{
@@ -202,7 +202,7 @@ const AddProduct = ({ setOpen }) => {
               "bold italic underline strikethrough | " +
               "link image media | " +
               "table tabledelete | tableprops tablerowprops tablecellprops | " +
-              'table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol |' +
+              "table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol |" +
               "tableinsertrowbefore tableinsertrowafter tabledeleterow | " +
               "tableinsertcolbefore tableinsertcolafter tabledeletecol | " +
               "align lineheight | checklist numlist bullist indent outdent | " +

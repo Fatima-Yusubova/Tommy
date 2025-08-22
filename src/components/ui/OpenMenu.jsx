@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 
-const OpenMenu = ({ open, setOpen, children, width = "max-w-lg" }) => {
+const OpenMenu = ({ open, setOpen, children, width = "max-w-4xl" }) => {
  
   useEffect(() => {
   if(open) {
@@ -22,17 +22,19 @@ const OpenMenu = ({ open, setOpen, children, width = "max-w-lg" }) => {
 
       <div
         className={`
-          fixed z-[999999] bg-white transition-all duration-700 ease-in-out
-          bottom-0 left-0 right-0 max-h-[100vh] h-[100vh] 
-          ${open ? "translate-y-0" : "translate-y-full"}
-          md:top-0 md:right-0 md:bottom-auto md:left-auto 
-          md:max-w-3xl md:h-screen md:max-h-none md:rounded-none
-          ${open ? "md:translate-x-0" : "md:translate-x-full"}
-          md:translate-y-0
-        `}
+    fixed z-[999999] bg-white transition-all duration-500 ease-in-out
+    inset-0 w-full h-screen
+    ${open ? "translate-y-0" : "translate-y-full"}
+    md:top-0 md:right-0 md:bottom-auto md:left-auto 
+    md:w-[600px] md:h-screen md:rounded-none
+    ${open ? "md:translate-x-0" : "md:translate-x-full"}
+    md:translate-y-0
+  `}
       >
-        <div className="flex items-start  h-full">
-          <div className="flex-1 overflow-y-auto scrollbar-hidden max-h-full">{children}</div>
+        <div className="flex items-start max-w-4xl h-full">
+          <div className="flex-1 overflow-y-auto scrollbar-hidden max-h-full">
+            {children}
+          </div>
           <div className="hidden md:flex items-center justify-between ">
             <button
               onClick={() => setOpen(false)}
