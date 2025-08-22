@@ -5,7 +5,7 @@ import BasketItems from "./BasketItems";
 
 const BasketMenu = ({ basketItems, setBagOpen }) => {
   return (
-    <div className="flex flex-col h-full max-h-screen">
+    <div className="flex flex-col w-2xl h-full max-h-screen">
       <div className="flex items-center justify-between p-6 flex-shrink-0">
         <h2 className="text-2xl font-medium">Shopping Bag</h2>
         <button
