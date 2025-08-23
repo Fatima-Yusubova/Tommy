@@ -7,8 +7,9 @@ import UserMenu from "./UserMenu";
 import OpenMenu from "../../ui/OpenMenu";
 import BasketMenu from "../Product/BasketMenu";
 import MobileNavbar from "./MobileNavbar";
-import { ChevronRight, Menu, X } from "lucide-react";
+import { ChevronRight, Heart, Menu, X } from "lucide-react";
 import { Link } from "react-router";
+import { useSelector } from "react-redux";
 
 const Action = () => {
   const [bagOpen, setBagOpen] = useState(false)
@@ -21,9 +22,9 @@ const Action = () => {
   const { data: basketItems } = useGetBasketItemsQuery()
   const { data: categories } = useGetAllCategoryQuery()
   const { data: products } = useGetAllProductQuery()
-
   //console.log(basketItems)
-  useEffect(() => {
+   const wishlist = useSelector((state) => state.wishlist)
+   useEffect(() => {
     let result =products
     if (search) {
     result = products.filter((item) =>item.name.toLowerCase().includes(search.toLowerCase()))
@@ -42,6 +43,14 @@ const Action = () => {
         <button onClick={() => setSearchOpen(true)}>
           <CgSearch size={20} />
         </button>
+        <button className="relative">
+          <Heart size={20} />
+          {wishlist.length > 0 && (
+            <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+              {wishlist.length}
+            </span>
+          )}
+        </button>
         <button onClick={() => setUserOpen((prev) => !prev)}>
           <LuUserRound size={20} />
         </button>
@@ -57,8 +66,7 @@ const Action = () => {
           <Menu strokeWidth={2} />
         </button>
       </div>
-
-      <OpenMenu open={searchOpen} setOpen={setSearchOpen} width="max-w-lg">
+      <OpenMenu open={searchOpen} setOpen={setSearchOpen} width="max-w-2xl">
         <div className="w-full h-full flex flex-col bg-white">
           <div className="flex justify-end p-6 border-b border-gray-200">
             <button onClick={() => setSearchOpen(false)} className="md:hidden">

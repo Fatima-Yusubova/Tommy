@@ -1,52 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import OpenMenu from "../../ui/OpenMenu";
 import QuickviewContent from "./QuickviewContent";
 import { Link } from "react-router";
-
-const colorMapping = {
-  Red: "#FF0000",
-  Blue: "#0000FF",
-  Green: "#008000",
-  Yellow: "#FFFF00",
-  Orange: "#FFA500",
-  Purple: "#800080",
-  Pink: "#FFC0CB",
-  Brown: "#A52A2A",
-  Black: "#000000",
-  White: "#FFFFFF",
-  Gray: "#808080",
-  Beige: "#F5F5DC",
-  Ivory: "#FFFFF0",
-  Teal: "#008080",
-  Turquoise: "#40E0D0",
-  Lime: "#00FF00",
-  Olive: "#808000",
-  Maroon: "#800000",
-  Navy: "#000080",
-  Indigo: "#4B0082",
-  Gold: "#FFD700",
-  Silver: "#C0C0C0",
-  Bronze: "#CD7F32",
-  Coral: "#FF7F50",
-  Salmon: "#FA8072",
-  Mint: "#98FB98",
-  Lavender: "#E6E6FA",
-  Charcoal: "#36454F",
-  Peach: "#FFCBA4",
-  Mustard: "#FFDB58",
-  Sand: "#F4A460",
-  Sky: "#87CEEB",
-  Plum: "#DDA0DD",
-  Emerald: "#50C878",
-  Ruby: "#E0115F",
-  Sapphire: "#0F52BA",
-}
+import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io"
+import { colorMapping } from "../../../constant/constant"
+import { useDispatch, useSelector } from "react-redux";
+import { addToWishlist ,removeFromWishlist } from "../../../store/wishlistSlice";
 
 const ProductCard = ({ item }) => {
   const [hovered, setHovered] = useState(false);
@@ -55,7 +20,7 @@ const ProductCard = ({ item }) => {
   const [view, setView] = useState(false);
 
   const handleMouseEnter = () => {
-    setHovered(true)
+    setHovered(true);
     if (swiper && item?.images?.length > 1) {
       swiper.slideTo(1, 300);
       setCurrentSlide(1);
@@ -63,22 +28,24 @@ const ProductCard = ({ item }) => {
   };
 
   const handleMouseLeave = () => {
-    setHovered(false)
+    setHovered(false);
     if (swiper) {
       swiper.slideTo(0, 300);
-      setCurrentSlide(0)
+      setCurrentSlide(0);
     }
-  }
+  };
 
   const goToNext = (e) => {
     e.stopPropagation();
     if (swiper) swiper.slideNext();
-  }
+  };
 
   const goToPrev = (e) => {
     e.stopPropagation();
     if (swiper) swiper.slidePrev();
   };
+
+
 
   const swiperConfig = {
     modules: [Navigation, Pagination],
@@ -96,6 +63,18 @@ const ProductCard = ({ item }) => {
     onSlideChange: (swiper) => setCurrentSlide(swiper.activeIndex),
     allowTouchMove: true,
   };
+  const dispatch = useDispatch()
+  const wishlist = useSelector((state) => state.wishlist)
+  const isWishlist = wishlist.includes(item?.id)
+  const handleWishlist = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (isWishlist) {
+      dispatch(removeFromWishlist(item.id))
+    } else {
+      dispatch(addToWishlist(item.id))
+    }
+  }
 
   return (
     <div className="cursor-pointer w-full">
@@ -104,16 +83,29 @@ const ProductCard = ({ item }) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-      
+        <button
+          onClick={handleWishlist}
+          className="absolute top-2 right-2 z-20 p-1 bg-white/80 rounded-full hover:bg-white transition-all duration-200 hover:scale-110"
+        >
+          {isWishlist ? (
+            <IoMdHeart size={20} className="text-red-500" />
+          ) : (
+            <IoMdHeartEmpty
+              size={20}
+              className="text-gray-600 hover:text-red-500"
+            />
+          )}
+        </button>
+
         {item?.images?.length > 1 ? (
           <Swiper {...swiperConfig} className="w-full h-full product-swiper">
             {item.images.map((img, i) => (
               <SwiperSlide key={i}>
                 <Link to={`/product/${item?.id}`}>
                   <img
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover relative"
                     src={img.url}
-                    alt={item?.name || `Product image ${i + 1}`}
+                    alt={`${item?.name} - Image ${i + 1}`}
                   />
                 </Link>
               </SwiperSlide>
@@ -124,10 +116,11 @@ const ProductCard = ({ item }) => {
             <img
               className="w-full h-full object-cover"
               src={item?.images?.[0]?.url}
-              alt={item?.name || "Product image"}
+              alt={item?.name}
             />
           </Link>
         )}
+
         {hovered && item?.images?.length > 1 && (
           <>
             <button
@@ -144,6 +137,7 @@ const ProductCard = ({ item }) => {
             </button>
           </>
         )}
+
         {hovered && (
           <div className="hidden lg:flex absolute inset-0 z-5 items-center justify-center">
             <button
@@ -164,18 +158,6 @@ const ProductCard = ({ item }) => {
             +
           </button>
         </div>
-        {item?.images?.length > 1 && hovered && (
-          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1">
-            {item.images.map((_, index) => (
-              <div
-                key={index}
-                className={`w-7 h-0.5 rounded-md transition-colors ${
-                  index === currentSlide ? "bg-gray-700" : "bg-white/50"
-                }`}
-              />
-            ))}
-          </div>
-        )}
       </div>
 
       <div className="p-2 sm:p-3 space-y-2 min-h-[80px] sm:min-h-[90px]">
@@ -223,7 +205,6 @@ const ProductCard = ({ item }) => {
           </div>
         )}
       </div>
-
       <OpenMenu open={view} setOpen={setView} width="max-w-4xl">
         <QuickviewContent item={item} closeMenu={() => setView(false)} />
       </OpenMenu>

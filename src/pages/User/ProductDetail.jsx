@@ -1,105 +1,67 @@
-import React, { useEffect, useState } from "react";
-import {
-  useGetProductIdQuery,
-  useAddBasketMutation,
-} from "../../store/eccomerceApi";
-import { Link, useParams } from "react-router";
-import { ChevronRight, Info } from "lucide-react";
-import DetailMenu from "../../components/User/Product/DetailMenuContent";
-import OpenMenu from "../../components/ui/OpenMenu";
-import DetailMenuContent from "../../components/User/Product/DetailMenuContent";
 
-const colorMapping = {
-  Red: "#FF0000",
-  Blue: "#0000FF",
-  Green: "#008000",
-  Yellow: "#FFFF00",
-  Orange: "#FFA500",
-  Purple: "#800080",
-  Pink: "#FFC0CB",
-  Brown: "#A52A2A",
-  Black: "#000000",
-  White: "#FFFFFF",
-  Gray: "#808080",
-  Beige: "#F5F5DC",
-  Ivory: "#FFFFF0",
-  Teal: "#008080",
-  Turquoise: "#40E0D0",
-  Lime: "#00FF00",
-  Olive: "#808000",
-  Maroon: "#800000",
-  Navy: "#000080",
-  Indigo: "#4B0082",
-  Gold: "#FFD700",
-  Silver: "#C0C0C0",
-  Bronze: "#CD7F32",
-  Coral: "#FF7F50",
-  Salmon: "#FA8072",
-  Mint: "#98FB98",
-  Lavender: "#E6E6FA",
-  Charcoal: "#36454F",
-  Peach: "#FFCBA4",
-  Mustard: "#FFDB58",
-  Sand: "#F4A460",
-  Sky: "#87CEEB",
-  Plum: "#DDA0DD",
-  Emerald: "#50C878",
-  Ruby: "#E0115F",
-  Sapphire: "#0F52BA",
-};
+import React, { useEffect, useState } from "react"
+import {useGetProductIdQuery,useAddBasketMutation} from "../../store/eccomerceApi"
+import { Link, useParams } from "react-router"
+import { ChevronRight, Info } from "lucide-react"
+import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io"
+import OpenMenu from "../../components/ui/OpenMenu"
+import DetailMenuContent from "../../components/User/Product/DetailMenuContent"
+import { colorMapping } from "../../constant/constant"
+import { useDispatch, useSelector } from "react-redux";
+import { addToWishlist, removeFromWishlist } from "../../store/wishlistSlice";
 
 const ProductDetail = () => {
-  const [selectedColor, setSelectedColor] = useState();
-  const [selectedSize, setSelectedSize] = useState();
-  const [quantity, setQuantity] = useState(1);
-  const [touched, setTouched] = useState(false);
-  const [flag, setFlag] = useState(false);
-
-  const { id } = useParams();
-  const { data: product } = useGetProductIdQuery(id);
-  const [addBasket, { isLoading }] = useAddBasketMutation();
-
+  const [selectedColor, setSelectedColor] = useState()
+  const [selectedSize, setSelectedSize] = useState()
+  const [quantity, setQuantity] = useState(1)
+  const [touched, setTouched] = useState(false)
+  const [flag, setFlag] = useState(false)
+  const { id } = useParams()
+  const { data: product } = useGetProductIdQuery(id)
+  const [addBasket, { isLoading }] = useAddBasketMutation()
+   const dispatch = useDispatch();
+   const wishlist = useSelector((state) => state.wishlist)
+   const isWishlist = wishlist.includes(product?.id)
+   const handleWishlist = () => {
+     if (isWishlist) {
+       dispatch(removeFromWishlist(product.id));
+     } else {
+       dispatch(addToWishlist(product.id));
+     }
+   };
+  
   const handleBasket = async (id) => {
     if (!selectedColor || !selectedSize) {
-      setTouched(true);
-      return;
-    }
+      setTouched(true)
+      }
 
-    try {
-      const response = await addBasket({
-        id: id,
-        color: selectedColor,
-        size: selectedSize,
-        quantity: quantity,
-      });
-
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    const response = await addBasket({
+      id: id,
+      color: selectedColor,
+      size: selectedSize,
+      quantity: quantity,
+    });
+  }
 
   return (
     <div className="flex gap-[100px] flex-col md:flex-row py-10">
       <div className="hidden md:flex flex-col gap-2 md:basis-[50%] ">
         {product?.images?.map((item, i) => (
-          <div key={i} className="w-full">
+          <div key={i} className="w-full ">
             <img className="w-full h-full object-cover " src={item.url} />
           </div>
         ))}
       </div>
-      <div className="md:hidden flex overflow-x-auto   scrollbar-hidden">
+      <div className="md:hidden flex overflow-x-auto scrollbar-hidden">
         {product?.images?.map((item, i) => (
-          <div key={i} className="w-full aspect-[3/4]  shrink-0">
+          <div key={i} className="w-full aspect-[3/4] shrink-0 ">
             <img className="w-full h-full object-cover" src={item.url} />
           </div>
         ))}
       </div>
-
-      <div className="sticky w-full md:basis-[40%]  top-10 self-start px-10 md:pr-20 py-10 h-fit">
+      <div className="sticky w-full md:basis-[40%] top-10 self-start px-10 md:pr-20 py-10 h-fit">
         <h5 className="py-4 text-xs">Tommy Hilfiger</h5>
         <Link className="text-xl ">{product?.name}</Link>
-
         <div className="flex items-center gap-2 py-5">
           {product?.discount > 0 ? (
             <>
@@ -194,6 +156,27 @@ const ProductDetail = () => {
               : "Select A Size"}
           </button>
         </div>
+
+        <button
+          onClick={handleWishlist}
+          className={`py-3 w-full rounded-sm border-2 transition-all duration-200 ${
+            isWishlist
+              ? "bg-red-500 text-white border-red-500 hover:bg-red-600"
+              : "bg-white text-black border-black hover:bg-black hover:text-white"
+          }`}
+        >
+          {isWishlist ? (
+            <span className="flex items-center justify-center gap-2">
+              <IoMdHeart size={20} />
+              Remove from Wishlist
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <IoMdHeartEmpty size={20} />
+              Add to Wishlist
+            </span>
+          )}
+        </button>
 
         <div>
           <p className="text-[#464C52] text-sm pt-5">
