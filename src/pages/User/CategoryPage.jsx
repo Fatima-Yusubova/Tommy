@@ -1,56 +1,74 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import {  useGetProductsByIdQuery,  useGetFilteredProductsQuery} from "../../store/eccomerceApi";
-import ProductCard from "../../components/User/Product/ProductCard"
-import { SlidersHorizontal, ChevronDown } from "lucide-react"
-import OpenMenu from "../../components/ui/OpenMenu"
-import FilterContent from "../../components/User/Product/FilterContent"
+import {useGetProductsByIdQuery,useGetFilteredProductsQuery} from "../../store/eccomerceApi";
+import ProductCard from "../../components/User/Product/ProductCard";
+import { SlidersHorizontal, ChevronDown } from "lucide-react";
+import OpenMenu from "../../components/ui/OpenMenu";
+import FilterContent from "../../components/User/Product/FilterContent";
+import CubLoader from "../../components/ui/CubLoader";
+
 const CategoryPage = () => {
-  const { categoryId } = useParams()
-  const { data: allCategoryProducts } = useGetProductsByIdQuery(categoryId)
+  const { categoryId } = useParams();
+  const {data: allCategoryProducts,isLoading: isCategoryLoading, isFetching} = useGetProductsByIdQuery(categoryId, {
+    refetchOnMountOrArgChange: true, 
+  });
+
   const [view, setView] = useState(false);
-  const [activeFilter, setActiveFilter] = useState(null)
-  const [selectedSort, setSelectedSort] = useState("Recommended")
+  const [activeFilter, setActiveFilter] = useState(null);
+  const [selectedSort, setSelectedSort] = useState("Recommended");
   const [filters, setFilters] = useState({
     brandId: 1,
     colors: [],
     sizes: [],
     minPrice: null,
     maxPrice: null,
-    sort : "Recommended"
-  })
+    sort: "Recommended",
+  });
 
   const actvFilter =
-filters.colors.length > 0 ||
-filters.sizes.length > 0 ||
-filters.minPrice !== null ||
-filters.maxPrice !== null ||
-filters.sort !==null
-const { data: filteredProducts } = useGetFilteredProductsQuery(filters, {skip: !actvFilter})
-const filteredByCategory = actvFilter ? filteredProducts?.filter((item) => +item.category.id === +categoryId): ''
-const displayProducts = actvFilter? filteredByCategory : allCategoryProducts
-const sorts = ["Recommended","Price Low To High","Price High to Low"]
-const priceRanges = [
-  { label: "$0 - $50", min: 0, max: 25 },
-  { label: "$50 - $100", min: 50, max: 100 },
-  { label: "$100 - $200", min: 100, max: 200 },
-  { label: "$200+", min: 200, max: null },
-]
-const handleFilterClick = (filterType) => {
-  setActiveFilter(filterType)
-  setView(true)}
-const handleCloseFilter = () => {
-  setView(false);
-  setActiveFilter(null);
-}
+    filters.colors.length > 0 ||
+    filters.sizes.length > 0 ||
+    filters.minPrice !== null ||
+    filters.maxPrice !== null ||
+    filters.sort !== null;
 
-const handleSortChange = (e) => {
-setSelectedSort(e.target.value)
-setFilters((prev) => ({...prev,sort: e.target.value,}))
-}
+  const {
+    data: filteredProducts,
+    isLoading: isFilteredLoading,
+    isFetching: isFilteredFetching,
+  } = useGetFilteredProductsQuery(filters, {
+    skip: !actvFilter,
+  });
+
+  const filteredByCategory = actvFilter? filteredProducts?.filter((item) => +item.category.id === +categoryId): "";
+  const displayProducts = actvFilter ? filteredByCategory : allCategoryProducts;
+
+  const sorts = ["Recommended", "Price Low To High", "Price High to Low"];
+  const priceRanges = [
+    { label: "$0 - $50", min: 0, max: 25 },
+    { label: "$50 - $100", min: 50, max: 100 },
+    { label: "$100 - $200", min: 100, max: 200 },
+    { label: "$200+", min: 200, max: null },
+  ];
+
+  const handleFilterClick = (filterType) => {
+    setActiveFilter(filterType);
+    setView(true);
+  };
+
+  const handleCloseFilter = () => {
+    setView(false);
+    setActiveFilter(null);
+  };
+
+  const handleSortChange = (e) => {
+    setSelectedSort(e.target.value);
+    setFilters((prev) => ({ ...prev, sort: e.target.value }));
+  };
 
   const handleColorFilter = (colorName) => {
-    setFilters((prev) => ({...prev,
+    setFilters((prev) => ({
+      ...prev,
       colors: prev.colors.includes(colorName)
         ? prev.colors.filter((c) => c !== colorName)
         : [...prev.colors, colorName],
@@ -91,6 +109,25 @@ setFilters((prev) => ({...prev,sort: e.target.value,}))
       maxPrice: null,
     });
   };
+
+  const [showLoader, setShowLoader] = useState(false)
+  useEffect(() => {
+    if (
+      isCategoryLoading ||
+      isFetching ||
+      isFilteredLoading ||
+      isFilteredFetching
+    ) {
+      setShowLoader(true);
+    } else {
+      const timer = setTimeout(() => setShowLoader(false), 1000)
+      return () => clearTimeout(timer);
+    }
+  }, [isCategoryLoading, isFetching, isFilteredLoading, isFilteredFetching])
+
+  if (showLoader) {
+    return <CubLoader />;
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -169,13 +206,13 @@ setFilters((prev) => ({...prev,sort: e.target.value,}))
             <span className="text-sm text-[#464C52]">
               {displayProducts?.length} Items
             </span>
-           
+
             <div className="flex items-center gap-2 text-sm">
               <span className="text-sm text-[#464C52]">Sort By</span>
               <div className="relative">
                 <select
                   value={selectedSort}
-                  onChange={handleSortChange} 
+                  onChange={handleSortChange}
                   className="appearance-none flex items-center gap-2 px-4 py-3 border border-gray-300 rounded-3xl text-sm cursor-pointer hover:border-gray-400 pr-8"
                 >
                   {sorts.map((option, i) => (
@@ -258,7 +295,7 @@ setFilters((prev) => ({...prev,sort: e.target.value,}))
 
       <div className="text-center my-10">
         <p className="text-sm text-[#1B1D1F] py-4">
-          Showing {displayProducts?.length} of{" "}
+          Showing {displayProducts?.length} of
           {allCategoryProducts?.length || 0} items
         </p>
         <button className="border border-gray-300 rounded-sm w-[40%] lg:w-[30%] py-4 hover:underline hover:border-gray-800 inline-block">
@@ -266,7 +303,7 @@ setFilters((prev) => ({...prev,sort: e.target.value,}))
         </button>
       </div>
 
-      <OpenMenu open={view} setOpen={setView} width="max-w-4xl">
+      <OpenMenu open={view} setOpen={setView} width="max-w-lg">
         <FilterContent
           closeMenu={handleCloseFilter}
           activeFilter={activeFilter}

@@ -159,7 +159,6 @@ const ProductCard = ({ item }) => {
           </button>
         </div>
       </div>
-
       <div className="p-2 sm:p-3 space-y-2 min-h-[80px] sm:min-h-[90px]">
         <h3 className="text-sm font-medium leading-tight line-clamp-2 text-gray-900">
           {item?.name}
