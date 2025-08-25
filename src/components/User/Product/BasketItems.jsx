@@ -1,11 +1,16 @@
 import { MinusIcon, PlusIcon } from "lucide-react";
 import React, { useState } from "react";
-import {useDeleteBasketItemMutation,  useUpdateBasketItemMutation} from "../../../store/eccomerceApi";
-import OpenMenu from "../../ui/OpenMenu";
-import EditContent from "./EditContent";
-const BasketItems = ({ basketItems}) => {
-  const [deleteBasketItem] = useDeleteBasketItemMutation()
-  const [updateBasketItem] = useUpdateBasketItemMutation()
+import {
+  useDeleteBasketItemMutation,
+  useIncreaseItemQuantityMutation,
+  useDecreaseItemQuantityMutation
+
+} from "../../../store/eccomerceApi";
+
+const BasketItems = ({ basketItems }) => {
+  const [deleteBasketItem] = useDeleteBasketItemMutation();
+  const [increaseItemQuantity] = useIncreaseItemQuantityMutation();
+  const [decreaseItemQuantity] = useDecreaseItemQuantityMutation()
   const handleDeleteBasket = async (id) => {
     try {
       let response = await deleteBasketItem(id);
@@ -13,16 +18,24 @@ const BasketItems = ({ basketItems}) => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
-  const updateQuantity = async (id, quantity) => {
+  const increaseQuantity = async (id) => {
     try {
-      const response = await updateBasketItem({ id, quantity });
+      const response = await increaseItemQuantity({ id})
+      console.log(response);
+    } catch (error) {
+      console.log(error)
+    }
+  };
+  const decreaseQuantity = async (id) => {
+    try {
+      const response = await decreaseItemQuantity({ id });
       console.log(response);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-hidden min-h-0 px-6">
@@ -50,14 +63,14 @@ const BasketItems = ({ basketItems}) => {
                   <div className="flex items-center gap-2">
                     <button
                       className="w-4 h-4 flex items-center justify-center bg-black text-white rounded-full"
-                      onClick={() => updateQuantity(item?.product?.id, 1)}
+                      onClick={() => increaseQuantity(item?.product?.id)}
                     >
                       <PlusIcon />
                     </button>
                     <span>{item?.quantity}</span>
                     <button
                       className="w-4 h-4 flex items-center justify-center bg-black text-white rounded-full"
-                      onClick={() => updateQuantity(item?.product?.id, -1)}
+                      onClick={() => decreaseQuantity(item?.product?.id)}
                     >
                       <MinusIcon />
                     </button>

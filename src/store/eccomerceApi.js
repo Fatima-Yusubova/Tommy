@@ -150,11 +150,17 @@ export const eccomerceApi = createApi({
       }),
       invalidatesTags: ["Basket"],
     }),
-    updateBasketItem: builder.mutation({
-      query: ({ id, quantity ,size ,color }) => ({
-        method: "post",
-        url: `/basket/${id}`,
-        body: { quantity ,size ,color },
+    increaseItemQuantity: builder.mutation({
+      query: ({ id }) => ({
+        method: "put",
+        url: `/basket/${id}/increaseQuantity`,
+      }),
+      invalidatesTags: ["Basket"],
+    }),
+    decreaseItemQuantity: builder.mutation({
+      query: ({ id }) => ({
+        method: "put",
+        url: `/basket/${id}/decreaseQuantity`,
       }),
       invalidatesTags: ["Basket"],
     }),
@@ -162,7 +168,8 @@ export const eccomerceApi = createApi({
 });
 
 export const {
-  useUpdateBasketItemMutation,
+  useDecreaseItemQuantityMutation,
+  useIncreaseItemQuantityMutation,
   useDeleteBasketItemMutation,
   useGetBasketItemsQuery,
   useGetFilteredProductsQuery,

@@ -1,54 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { useGetProductIdQuery } from "../../../store/eccomerceApi";
+import {
+  useGetProductIdQuery,
+  useAddBasketMutation,
+} from "../../../store/eccomerceApi";
 import { IoClose } from "react-icons/io5";
 import { Info } from "lucide-react";
-import { useAddBasketMutation } from "../../../store/eccomerceApi";
-
-const colorMapping = {
-  Red: "#FF0000",
-  Blue: "#0000FF",
-  Green: "#008000",
-  Yellow: "#FFFF00",
-  Orange: "#FFA500",
-  Purple: "#800080",
-  Pink: "#FFC0CB",
-  Brown: "#A52A2A",
-  Black: "#000000",
-  White: "#FFFFFF",
-  Gray: "#808080",
-  Beige: "#F5F5DC",
-  Ivory: "#FFFFF0",
-  Teal: "#008080",
-  Turquoise: "#40E0D0",
-  Lime: "#00FF00",
-  Olive: "#808000",
-  Maroon: "#800000",
-  Navy: "#000080",
-  Indigo: "#4B0082",
-  Gold: "#FFD700",
-  Silver: "#C0C0C0",
-  Bronze: "#CD7F32",
-  Coral: "#FF7F50",
-  Salmon: "#FA8072",
-  Mint: "#98FB98",
-  Lavender: "#E6E6FA",
-  Charcoal: "#36454F",
-  Peach: "#FFCBA4",
-  Mustard: "#FFDB58",
-  Sand: "#F4A460",
-  Sky: "#87CEEB",
-  Plum: "#DDA0DD",
-  Emerald: "#50C878",
-  Ruby: "#E0115F",
-  Sapphire: "#0F52BA",
-};
+import { colorMapping } from "../../../constant/constant";
 
 const QuickviewContent = ({ item, closeMenu }) => {
   const [selectedColor, setSelectedColor] = useState();
   const [selectedSize, setSelectedSize] = useState();
   const [quantity, setQuantity] = useState(1);
-  const [touched, setTouched] = useState(false);
+  const [touched, setTouched] = useState({ size: false, color: false });
   const navigate = useNavigate();
   const { data: product } = useGetProductIdQuery(item?.id);
   const [addBasket, { isLoading }] = useAddBasketMutation();
@@ -65,10 +29,17 @@ const QuickviewContent = ({ item, closeMenu }) => {
   };
 
   const handleBasket = async (id) => {
-    if (product?.sizes?.length > 0 && !selectedSize) {
-      setTouched(true);
-      return;
+    let flag = true
+    if (product?.colors?.length > 0 && !selectedColor) {
+      setTouched((prev) => ({ ...prev, color: true }))
+      flag = false
     }
+
+    if (product?.sizes?.length > 0 && !selectedSize) {
+      setTouched((prev) => ({ ...prev, size: true }))
+      flag= false
+    }
+    if (!flag) return
 
     try {
       const response = await addBasket({
@@ -138,7 +109,6 @@ const QuickviewContent = ({ item, closeMenu }) => {
                 </span>
               )}
             </div>
-
             <div className="mb-6">
               <span className="text-[#464C52] text-sm">Color</span>
               <span className="text-sm font-medium">{selectedColor}</span>
@@ -146,7 +116,10 @@ const QuickviewContent = ({ item, closeMenu }) => {
                 {product?.colors?.map((color, i) => (
                   <button
                     key={i}
-                    onClick={() => setSelectedColor(color)}
+                    onClick={() => {
+                      setSelectedColor(color);
+                      setTouched((prev) => ({ ...prev, color: false }));
+                    }}
                     className={`w-8 h-8 rounded-full border-2 ${
                       selectedColor === color
                         ? "border-black"
@@ -156,8 +129,14 @@ const QuickviewContent = ({ item, closeMenu }) => {
                   />
                 ))}
               </div>
+              {touched.color &&
+                !selectedColor &&
+                product?.colors?.length > 0 && (
+                  <p className="text-red-700 text-sm my-5 flex items-center gap-2">
+                    <Info size={18} /> Please select a color
+                  </p>
+                )}
             </div>
-
             <div className="mb-6">
               <p className="text-[#464C52] text-sm mb-3">Size</p>
               {product?.sizes?.length > 0 ? (
@@ -167,13 +146,13 @@ const QuickviewContent = ({ item, closeMenu }) => {
                       key={i}
                       onClick={() => {
                         setSelectedSize(size);
-                        setTouched(false);
+                        setTouched((prev) => ({ ...prev, size: false }));
                       }}
                       className={`h-12 border rounded-sm flex items-center justify-center cursor-pointer
                         ${
                           selectedSize === size
                             ? "border-black bg-black text-white"
-                            : touched && !selectedSize
+                            : touched.size && !selectedSize
                             ? "border-red-500"
                             : "border-gray-300"
                         }`}
@@ -186,14 +165,12 @@ const QuickviewContent = ({ item, closeMenu }) => {
                 <p className="text-sm font-medium">One Size</p>
               )}
 
-              {touched && !selectedSize && product?.sizes?.length > 0 && (
+              {touched.size && !selectedSize && product?.sizes?.length > 0 && (
                 <p className="text-red-700 text-sm my-5 flex items-center gap-2">
                   <Info size={18} /> Please select a size
                 </p>
               )}
             </div>
-
-            {/* Basket */}
             <div className="space-y-3 mb-6">
               <div className="flex items-center gap-3">
                 <select
@@ -211,8 +188,9 @@ const QuickviewContent = ({ item, closeMenu }) => {
                 <button
                   onClick={() => handleBasket(product?.id)}
                   className="py-3 basis-[70%] bg-black text-white rounded-sm hover:underline"
+                  disabled={isLoading}
                 >
-                  {selectedSize ? "Add to Bag" : "Select A Size"}
+                  {isLoading ? "Adding..." : "Add to Bag"}
                 </button>
               </div>
 
@@ -230,7 +208,7 @@ const QuickviewContent = ({ item, closeMenu }) => {
         <div className="basis-[50%] overflow-y-auto h-screen scrollbar-hidden relative">
           {product?.images?.map((item, i) => (
             <div key={i}>
-              <img src={item.url} alt="" className="w-full" />
+              <img src={item.url} alt="" className="w-full mb-2" />
             </div>
           ))}
         </div>
@@ -264,7 +242,10 @@ const QuickviewContent = ({ item, closeMenu }) => {
               {product?.colors?.map((color, i) => (
                 <button
                   key={i}
-                  onClick={() => setSelectedColor(color)}
+                  onClick={() => {
+                    setSelectedColor(color);
+                    setTouched((prev) => ({ ...prev, color: false }));
+                  }}
                   className={`w-6 h-6 rounded-full border-2 ${
                     selectedColor === color
                       ? "border-black bg-black text-white"
@@ -274,6 +255,11 @@ const QuickviewContent = ({ item, closeMenu }) => {
                 />
               ))}
             </div>
+            {touched.color && !selectedColor && product?.colors?.length > 0 && (
+              <p className="text-red-700 text-sm my-5 flex items-center gap-2">
+                <Info size={18} /> Please select a color
+              </p>
+            )}
           </div>
           <div>
             <p className="text-[#464C52] text-sm py-5">Size</p>
@@ -284,13 +270,13 @@ const QuickviewContent = ({ item, closeMenu }) => {
                     key={i}
                     onClick={() => {
                       setSelectedSize(size);
-                      setTouched(false);
+                      setTouched((prev) => ({ ...prev, size: false }));
                     }}
                     className={`w-15 h-12 border rounded-sm flex items-center justify-center cursor-pointer
                       ${
                         selectedSize === size
                           ? "border-black bg-black text-white"
-                          : touched && !selectedSize
+                          : touched.size && !selectedSize
                           ? "border-red-500"
                           : "border-gray-300"
                       }`}
@@ -303,7 +289,7 @@ const QuickviewContent = ({ item, closeMenu }) => {
               <p className="text-sm font-medium">One Size</p>
             )}
 
-            {touched && !selectedSize && product?.sizes?.length > 0 && (
+            {touched.size && !selectedSize && product?.sizes?.length > 0 && (
               <p className="text-red-700 text-sm my-5 flex items-center gap-2">
                 <Info size={18} /> Please select a size
               </p>
@@ -325,8 +311,9 @@ const QuickviewContent = ({ item, closeMenu }) => {
             <button
               onClick={() => handleBasket(product?.id)}
               className="py-4 basis-[70%] bg-black text-white rounded-sm hover:underline"
+              disabled={isLoading}
             >
-              {selectedSize ? "Add to Bag" : "Select A Size"}
+              {isLoading ? "Adding..." : "Add to Bag"}
             </button>
           </div>
           <div>

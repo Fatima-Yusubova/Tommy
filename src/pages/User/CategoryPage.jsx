@@ -201,7 +201,6 @@ const CategoryPage = () => {
               All Filters
             </button>
           </div>
-
           <div className="flex justify-between items-center my-5">
             <span className="text-sm text-[#464C52]">
               {displayProducts?.length} Items
@@ -245,7 +244,6 @@ const CategoryPage = () => {
                 </button>
               </span>
             ))}
-
             {filters.colors.map((color) => (
               <span
                 key={color}
