@@ -2,8 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { IoPlay } from "react-icons/io5";
 import { IoPauseOutline } from "react-icons/io5";
+import { useGetAllCategoryQuery } from "../../../../store/eccomerceApi";
+
 
 const HeroBanner = () => {
+    const { data: category } = useGetAllCategoryQuery()
+  
   const videoRef = useRef(null)
   const [flag ,setFlag] = useState(true)
   const toggleBtn= () =>{
@@ -37,10 +41,10 @@ const HeroBanner = () => {
       <div className="absolute bottom-20 left-0 right-0 flex justify-center z-10">
         <ul className="flex  justify-center flex-nowrap items-center gap-10 text-white tracking-tight text-[16px] underline">
           <li>
-            <Link to="/men">Shop Men</Link>
+            <Link to={`/category/${category?.[5]?.id}`}>Shop Men</Link>
           </li>
           <li>
-            <Link to="/women">Shop Women</Link>
+            <Link to={`/category/${category?.[0]?.id}`}>Shop Women</Link>
           </li>
         </ul>
       </div>

@@ -21,7 +21,6 @@ const UserMenu = () => {
     <div className="bg-black w-[200px] min-h-[130px] text-white p-4">
       <div className="flex flex-col gap-3 items-start text-sm font-medium tracking-tight p-2">
         {user ? (
-          // İstifadəçi login olubsa
           <>
             <div className="text-white font-semibold mb-3">
              Hi  {user?.user?.firstName}

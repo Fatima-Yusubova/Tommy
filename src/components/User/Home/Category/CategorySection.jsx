@@ -1,12 +1,13 @@
-import React from 'react'
-import { Link } from 'react-router';
+import React from "react";
+import { Link } from "react-router";
 
-const CategorySection = ({title ,description ,image,link ,index}) => {
+const CategorySection = ({ title, description, image, link, index }) => {
   return (
-    <div className="relative w-full h-[900px]">
+    <div className="relative w-full h-[900px] overflow-hidden">
       <img
         src={image}
-        className="absolute inset-0 w-full h-full object-cover"
+        className={`absolute inset-0 w-full h-full object-cover
+          ${index >= 2 ? "object-left md:object-center" : ""}`}
       />
       <div
         className={`absolute inset-0 z-10 text-white text-center flex flex-col gap-3
@@ -22,7 +23,7 @@ const CategorySection = ({title ,description ,image,link ,index}) => {
         </p>
       </div>
       <div className="absolute bottom-20 left-0 right-0 flex justify-center z-10">
-        <ul className="flex  justify-center flex-nowrap items-center gap-10 text-white tracking-tight text-[16px] underline">
+        <ul className="flex justify-center flex-nowrap items-center gap-10 text-white tracking-tight text-[16px] underline">
           <li>
             <Link to="/men">{link}</Link>
           </li>
@@ -30,6 +31,6 @@ const CategorySection = ({title ,description ,image,link ,index}) => {
       </div>
     </div>
   );
-}
+};
 
-export default CategorySection
+export default CategorySection;
