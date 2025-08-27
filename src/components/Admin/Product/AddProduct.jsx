@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useGetAllCategoryQuery } from "../../../store/eccomerceApi";
 import { useAddProductMutation } from "../../../store/eccomerceApi";
-import { useUploadImagesMutation } from "../../../store/eccomerceApi"; 
+import { useUploadImagesMutation } from "../../../store/eccomerceApi";
 import { toast } from "react-toastify";
 import { Editor } from "@tinymce/tinymce-react";
 
@@ -71,7 +71,7 @@ const AddProduct = ({ setOpen }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [discount ,setDiscount] = useState('')
+  const [discount, setDiscount] = useState("");
   const [stock, setStock] = useState("");
   const [brandId, setBrand] = useState("");
   const [slug, setSlug] = useState("");
@@ -83,7 +83,48 @@ const AddProduct = ({ setOpen }) => {
   const [uploadImage] = useUploadImagesMutation();
 
   const { data: category } = useGetAllCategoryQuery();
+  console.log(category);
   const [addProduct, { isLoading }] = useAddProductMutation();
+
+  // Kateqoriya seçeneklerini düz hierarchiya ilə yaratmaq üçün funksiya
+  const renderCategoryOptions = () => {
+    const options = [];
+
+    if (category) {
+      category.forEach((item) => {
+        // Ana kateqoriya
+        options.push(
+          <option key={item.id} value={item.id}>
+            {item.name}
+          </option>
+        );
+
+        // Alt kateqoriyalar (1-ci səviyyə)
+        if (item.children && item.children.length > 0) {
+          item.children.forEach((child) => {
+            options.push(
+              <option key={child.id} value={child.id}>
+                ├── {child.name}
+              </option>
+            );
+
+            // Alt-alt kateqoriyalar (2-ci səviyyə)
+            if (child.children && child.children.length > 0) {
+              child.children.forEach((grandChild) => {
+                options.push(
+                  <option key={grandChild.id} value={grandChild.id}>
+                    │&nbsp;&nbsp;&nbsp;&nbsp;├── {grandChild.name}
+                  </option>
+                );
+              });
+            }
+          });
+        }
+      });
+    }
+
+    return options;
+  };
 
   const handleFile = async (e) => {
     const files = Array.from(e.target.files);
@@ -105,6 +146,7 @@ const AddProduct = ({ setOpen }) => {
       }
     }
   };
+
   const handleProduct = async () => {
     try {
       const response = await addProduct({
@@ -123,10 +165,26 @@ const AddProduct = ({ setOpen }) => {
 
       toast.success("product added succesfully");
       console.log(response);
+
+      // Form-u təmizlə
+      setName("");
+      setDescription("");
+      setPrice("");
+      setDiscount("");
+      setStock("");
+      setBrand("");
+      setSlug("");
+      setSizes([]);
+      setCategoryId("");
+      setSelectedColor([]);
+      setImages([]);
+      setPreviews([]);
     } catch (error) {
       console.log(error);
+      toast.error("Error adding product");
     }
   };
+
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="text-center mb-4">
@@ -168,8 +226,8 @@ const AddProduct = ({ setOpen }) => {
               "lists",
               "media",
               "searchreplace",
-              "table", // əsas table plugin
-              "advtable", // table üçün advanced imkanlar
+              "table",
+              "advtable",
               "visualblocks",
               "wordcount",
               "checklist",
@@ -215,174 +273,194 @@ const AddProduct = ({ setOpen }) => {
           }}
           initialValue="Welcome to TinyMCE!"
         />
+      </div>
 
-        <div />
+      <div>
+        <label className="block text-gray-700 text-lg font-semibold mb-3">
+          Price
+        </label>
+        <input
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
+          placeholder="Add product price..."
+          type="number"
+        />
+      </div>
 
-        <div>
-          <label className="block text-gray-700 text-lg font-semibold mb-3">
-            Price
-          </label>
-          <input
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
-            placeholder="Add product price..."
-            type="number"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700 text-lg font-semibold mb-3">
-            Dsicount
-          </label>
-          <input
-            value={discount}
-            onChange={(e) => setDiscount(e.target.value)}
-            className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
-            placeholder="Add product discount..."
-            type="number"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700 text-lg font-semibold mb-3">
-            Stock
-          </label>
-          <input
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
-            placeholder="Add category name..."
-            type="text"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700 text-lg font-semibold mb-3">
-            Brand
-          </label>
-          <input
-            value={brandId}
-            onChange={(e) => setBrand(e.target.value)}
-            className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
-            placeholder="Add category name..."
-            type="text"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-700 text-lg font-semibold mb-3">
-            Colors
-          </label>
+      <div>
+        <label className="block text-gray-700 text-lg font-semibold mb-3">
+          Discount
+        </label>
+        <input
+          value={discount}
+          onChange={(e) => setDiscount(e.target.value)}
+          className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
+          placeholder="Add product discount..."
+          type="number"
+        />
+      </div>
 
-          <select
-            multiple
-            value={selectedColor}
-            onChange={(e) => {
-              console.log(e.target.selectedOptions);
-              const selectedCo = Array.from(e.target.selectedOptions).map(
-                (item) => item.value
-              );
-              setSelectedColor(selectedCo);
-            }}
-            className="block w-full border-2 border-purple-200 rounded-xl p-4 mb-3"
-          >
-            {colors.map((item, i) => (
-              <option key={i} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-gray-700 text-lg font-semibold mb-3">
-            Sizes
-          </label>
-          <select
-            multiple
-            value={sizes}
-            onChange={(e) =>
-              setSizes([...e.target.selectedOptions].map((opt) => opt.value))
-            }
-            className="block w-full text-gray-700 text-lg font-semibold mb-3"
-            name=""
-            id=""
-          >
-            {sizeArr.map((item, i) => (
-              <option value={item} key={i}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 text-lg font-semibold mb-3">
-            Images
-          </label>
+      <div>
+        <label className="block text-gray-700 text-lg font-semibold mb-3">
+          Stock
+        </label>
+        <input
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+          className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
+          placeholder="Add stock quantity..."
+          type="number"
+        />
+      </div>
 
-          <input
-            type="file"
-            multiple
-            onChange={handleFile}
-            className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
-          />
+      <div>
+        <label className="block text-gray-700 text-lg font-semibold mb-3">
+          Brand ID
+        </label>
+        <input
+          value={brandId}
+          onChange={(e) => setBrand(e.target.value)}
+          className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
+          placeholder="Add brand ID..."
+          type="number"
+        />
+      </div>
 
-          <div className="flex gap-3 mt-4 flex-wrap">
-            {previews.map((src, i) => (
+      <div>
+        <label className="block text-gray-700 text-lg font-semibold mb-3">
+          Colors
+        </label>
+        <select
+          multiple
+          value={selectedColor}
+          onChange={(e) => {
+            const selectedCo = Array.from(e.target.selectedOptions).map(
+              (item) => item.value
+            );
+            setSelectedColor(selectedCo);
+          }}
+          className="block w-full border-2 border-purple-200 rounded-xl p-4 mb-3 min-h-[120px]"
+        >
+          {colors.map((item, i) => (
+            <option key={i} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-purple-600 mt-1">
+          Hold Ctrl/Cmd to select multiple colors
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-gray-700 text-lg font-semibold mb-3">
+          Sizes
+        </label>
+        <select
+          multiple
+          value={sizes}
+          onChange={(e) =>
+            setSizes([...e.target.selectedOptions].map((opt) => opt.value))
+          }
+          className="block w-full border-2 border-purple-200 rounded-xl p-4 mb-3 min-h-[120px]"
+        >
+          {sizeArr.map((item, i) => (
+            <option value={item} key={i}>
+              {item}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-purple-600 mt-1">
+          Hold Ctrl/Cmd to select multiple sizes
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <label className="block text-gray-700 text-lg font-semibold mb-3">
+          Images
+        </label>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleFile}
+          className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
+        />
+        <div className="flex gap-3 mt-4 flex-wrap">
+          {previews.map((src, i) => (
+            <div key={i} className="relative">
               <img
-                key={i}
                 src={src}
                 alt={`Preview ${i}`}
                 className="w-20 h-20 object-cover rounded border"
               />
-            ))}
-          </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviews((prev) => prev.filter((_, index) => index !== i));
+                  setImages((prev) => prev.filter((_, index) => index !== i));
+                }}
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+              >
+                ×
+              </button>
+            </div>
+          ))}
         </div>
+      </div>
 
-        <div>
-          <label className="block text-gray-700 text-lg font-semibold mb-3">
-            Category
-          </label>
-          <select
-            className="block w-full border-2 border-purple-200 rounded-xl p-4"
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-          >
-            <option value="">Select a category</option>
-            {category?.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-gray-700 text-lg font-semibold mb-3">
-            Slug
-          </label>
-          <input
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
-            placeholder="Add category slug..."
-            type="text"
-          />
-          <p className="text-xs text-purple-600 mt-2 font-medium">
-            URL-friendly version of the name
-          </p>
-        </div>
-        <div className="w-full flex justify-end gap-3 pt-4">
-          <button
-            onClick={() => setOpen(false)}
-            className="px-6 py-3 font-semibold text-gray-600 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleProduct}
-            className="px-6 py-3 font-semibold bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 text-white rounded-xl hover:from-purple-700 hover:via-indigo-700 hover:to-cyan-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
-          >
-            Add Product
-          </button>
-        </div>
+      <div>
+        <label className="block text-gray-700 text-lg font-semibold mb-3">
+          Category
+        </label>
+        <select
+          className="block w-full border-2 border-purple-200 rounded-xl p-4"
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          style={{ fontFamily: "monospace" }}
+        >
+          <option value="">Select a category</option>
+          {renderCategoryOptions()}
+        </select>
+        <p className="text-xs text-purple-600 mt-2 font-medium">
+          Choose the most specific category for your product
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-gray-700 text-lg font-semibold mb-3">
+          Slug
+        </label>
+        <input
+          value={slug}
+          onChange={(e) => setSlug(e.target.value)}
+          className="w-full bg-white/70 backdrop-blur-sm text-gray-800 border-2 border-purple-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder-gray-400"
+          placeholder="product-name-slug"
+          type="text"
+        />
+        <p className="text-xs text-purple-600 mt-2 font-medium">
+          URL-friendly version of the name (e.g., "tommy-jeans-shirt")
+        </p>
+      </div>
+
+      <div className="w-full flex justify-end gap-3 pt-4">
+        <button
+          onClick={() => setOpen(false)}
+          className="px-6 py-3 font-semibold text-gray-600 border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleProduct}
+          disabled={isLoading}
+          className="px-6 py-3 font-semibold bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 text-white rounded-xl hover:from-purple-700 hover:via-indigo-700 hover:to-cyan-700 transform hover:scale-105 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          {isLoading ? "Adding..." : "Add Product"}
+        </button>
       </div>
     </div>
   );
 };
+
 export default AddProduct;

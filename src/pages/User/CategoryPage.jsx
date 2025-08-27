@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import {useGetProductsByIdQuery,useGetFilteredProductsQuery} from "../../store/eccomerceApi";
+import {
+  useGetProductsByIdQuery,
+  useGetFilteredProductsQuery,
+  useGetAllCategoryQuery,
+} from "../../store/eccomerceApi";
 import ProductCard from "../../components/User/Product/ProductCard";
 import { SlidersHorizontal, ChevronDown } from "lucide-react";
 import OpenMenu from "../../components/ui/OpenMenu";
 import FilterContent from "../../components/User/Product/FilterContent";
 import CubLoader from "../../components/ui/CubLoader";
+import Tommyjeans from "./Tommyjeans";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
-  const {data: allCategoryProducts,isLoading: isCategoryLoading, isFetching} = useGetProductsByIdQuery(categoryId, {
-    refetchOnMountOrArgChange: true, 
-  });
+  const { data: category } = useGetAllCategoryQuery();
+
+  const {
+    data: allCategoryProducts,
+    isLoading: isCategoryLoading,
+    isFetching,
+  } = useGetProductsByIdQuery(categoryId, { refetchOnMountOrArgChange: true });
 
   const [view, setView] = useState(false);
   const [activeFilter, setActiveFilter] = useState(null);
@@ -25,6 +34,28 @@ const CategoryPage = () => {
     sort: "Recommended",
   });
 
+  const getCurrentCategory = () => {
+    if (allCategoryProducts && allCategoryProducts.length > 0) {
+      return allCategoryProducts[0].category;
+    }
+    if (category) {
+      const findCategoryById = (categories, targetId) => {
+        for (const cat of categories) {
+          if (+cat.id === +targetId) return cat;
+          if (cat.children) {
+            const found = findCategoryById(cat.children, targetId);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+      return findCategoryById(category, categoryId);
+    }
+    return null;
+  };
+
+  const currentCategory = getCurrentCategory();
+
   const actvFilter =
     filters.colors.length > 0 ||
     filters.sizes.length > 0 ||
@@ -36,11 +67,11 @@ const CategoryPage = () => {
     data: filteredProducts,
     isLoading: isFilteredLoading,
     isFetching: isFilteredFetching,
-  } = useGetFilteredProductsQuery(filters, {
-    skip: !actvFilter,
-  });
+  } = useGetFilteredProductsQuery(filters, { skip: !actvFilter });
 
-  const filteredByCategory = actvFilter? filteredProducts?.filter((item) => +item.category.id === +categoryId): "";
+  const filteredByCategory = actvFilter
+    ? filteredProducts?.filter((item) => +item.category.id === +categoryId)
+    : "";
   const displayProducts = actvFilter ? filteredByCategory : allCategoryProducts;
 
   const sorts = ["Recommended", "Price Low To High", "Price High to Low"];
@@ -93,11 +124,7 @@ const CategoryPage = () => {
   };
 
   const clearPriceFilter = () => {
-    setFilters((prev) => ({
-      ...prev,
-      minPrice: null,
-      maxPrice: null,
-    }));
+    setFilters((prev) => ({ ...prev, minPrice: null, maxPrice: null }));
   };
 
   const clearAllFilters = () => {
@@ -110,7 +137,8 @@ const CategoryPage = () => {
     });
   };
 
-  const [showLoader, setShowLoader] = useState(false)
+  const [showLoader, setShowLoader] = useState(false);
+
   useEffect(() => {
     if (
       isCategoryLoading ||
@@ -120,24 +148,29 @@ const CategoryPage = () => {
     ) {
       setShowLoader(true);
     } else {
-      const timer = setTimeout(() => setShowLoader(false), 1000)
+      const timer = setTimeout(() => setShowLoader(false), 1000);
       return () => clearTimeout(timer);
     }
-  }, [isCategoryLoading, isFetching, isFilteredLoading, isFilteredFetching])
+  }, [isCategoryLoading, isFetching, isFilteredLoading, isFilteredFetching]);
 
   if (showLoader) {
     return <CubLoader />;
+  }
+
+  // Tommy Jeans üçün sadələşdirilmiş yoxlama
+  if (currentCategory && currentCategory.name === "Tommy Jeans") {
+    return <Tommyjeans categoryId={categoryId} category={currentCategory} />;
   }
 
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-[95%] m-auto">
         <div className="py-5">
-          {allCategoryProducts && (
+          {currentCategory && (
             <>
-              <p className="pb-5">{allCategoryProducts[0]?.category.name}</p>
+              <p className="pb-5">{currentCategory.name}</p>
               <h1 className="text-2xl">
-                {allCategoryProducts[0]?.category.name}'s Clothing & Accessories
+                {currentCategory.name}'s Clothing & Accessories
               </h1>
             </>
           )}
@@ -205,7 +238,6 @@ const CategoryPage = () => {
             <span className="text-sm text-[#464C52]">
               {displayProducts?.length} Items
             </span>
-
             <div className="flex items-center gap-2 text-sm">
               <span className="text-sm text-[#464C52]">Sort By</span>
               <div className="relative">
@@ -228,6 +260,7 @@ const CategoryPage = () => {
             </div>
           </div>
         </div>
+
         {actvFilter && (
           <div className="mb-4 flex flex-wrap gap-3 items-center">
             {filters.sizes.map((size) => (
@@ -293,7 +326,7 @@ const CategoryPage = () => {
 
       <div className="text-center my-10">
         <p className="text-sm text-[#1B1D1F] py-4">
-          Showing {displayProducts?.length} of
+          Showing {displayProducts?.length} of{" "}
           {allCategoryProducts?.length || 0} items
         </p>
         <button className="border border-gray-300 rounded-sm w-[40%] lg:w-[30%] py-4 hover:underline hover:border-gray-800 inline-block">

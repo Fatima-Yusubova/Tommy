@@ -8,7 +8,7 @@ const CollectionItems = ({name ,image ,link}) => {
       </div>
       <div className='text-center'>
         <h3 className='text-[18px] text-[#212529] py-5'>{name}</h3>
-        <a href="#">{link}</a>
+        <a className='underline' href="#">{link}</a>
       </div>
     </div>
   )
