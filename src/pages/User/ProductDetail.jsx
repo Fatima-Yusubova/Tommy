@@ -8,6 +8,7 @@ import DetailMenuContent from "../../components/User/Product/DetailMenuContent";
 import { colorMapping } from "../../constant/constant";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist, removeFromWishlist } from "../../store/wishlistSlice";
+import ShowSuccessModal from "../../components/User/Product/ShowSuccessModal";
 
 const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState();
@@ -20,6 +21,8 @@ const ProductDetail = () => {
   const [addBasket, { isLoading }] = useAddBasketMutation();
   const [scrollIndex, setScrollIndex] = useState(0);
   const scrollRef = useRef(null)
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [addedProduct, setAddedProduct] = useState(null);
   useEffect(() => {
     if (product && (!product.sizes || product.sizes.length === 0)) {
       setSelectedSize("One Size")
@@ -56,6 +59,13 @@ const handleWishlist = () => {
         quantity,
       });
       console.log(response);
+       setAddedProduct({
+         ...product,
+         selectedColor,
+         selectedSize: selectedSize || "One Size",
+         quantity,
+       });
+       setShowSuccessModal(true);
     } catch (error) {
       console.error(error);
     }
@@ -73,11 +83,11 @@ const handleWishlist = () => {
       <div className="md:hidden relative">
         <div
           ref={scrollRef}
-           onScroll={(e) => {
-            const scrollLeft = e.target.scrollLeft
-            const width = e.target.offsetWidth
-            const index = Math.round(scrollLeft / width)
-            setScrollIndex(index)
+          onScroll={(e) => {
+            const scrollLeft = e.target.scrollLeft;
+            const width = e.target.offsetWidth;
+            const index = Math.round(scrollLeft / width);
+            setScrollIndex(index);
           }}
           className="flex overflow-x-auto scrollbar-hidden snap-x snap-mandatory"
         >
@@ -98,7 +108,10 @@ const handleWishlist = () => {
           <div className="h-0.5 bg-gray-300 overflow-hidden rounded-full">
             <div
               className="h-full bg-black rounded-full transition-all duration-300 ease-out"
-              style={{width: `${((scrollIndex + 1) / (product?.images?.length || 1)) * 100}%`,
+              style={{
+                width: `${
+                  ((scrollIndex + 1) / (product?.images?.length || 1)) * 100
+                }%`,
               }}
             />
           </div>
@@ -264,6 +277,16 @@ const handleWishlist = () => {
           </div>
         </div>
       </div>
+      <OpenMenu
+        open={showSuccessModal}
+        setOpen={setShowSuccessModal}
+        width="max-w-3xl"
+      >
+        <ShowSuccessModal
+          addedProduct={addedProduct}
+          onClose={() => setShowSuccessModal(false)}
+        />
+      </OpenMenu>
     </div>
   );
 };

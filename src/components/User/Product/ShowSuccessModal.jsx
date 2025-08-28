@@ -1,7 +1,25 @@
 import React from "react";
+import { useNavigate } from "react-router";
 import { IoClose } from "react-icons/io5";
+import { useGetProductsByIdQuery } from "../../../store/eccomerceApi";
+const ShowSuccessModal = ({addedProduct,onClose}) => {
+    console.log(addedProduct)
+     const { data: recommendedProducts = [] } = useGetProductsByIdQuery(
+       addedProduct?.category?.id,
+       { skip: !addedProduct?.category?.id } // addedProduct yoxdursa çağırmasın
+     );
+  const navigate = useNavigate();
 
-const ShowSuccessModal = ({ addedProduct, onClose }) => {
+  console.log(recommendedProducts)
+  const handleCheckout = () => {
+    onClose();
+    navigate("/checkout");
+  };
+
+  const handleContinueShopping = () => {
+    onClose();
+  };
+
   return (
     <div className="p-6">
       <div className="flex items-center gap-3 mb-6">
@@ -20,7 +38,7 @@ const ShowSuccessModal = ({ addedProduct, onClose }) => {
             />
           </svg>
         </div>
-        <h2 className="text-2xl my-5 ">1 Item Added</h2>
+        <h2 className="text-2xl my-5">1 Item Added</h2>
         <button
           onClick={onClose}
           className="ml-auto md:hidden p-1 hover:bg-gray-100 rounded-full"
@@ -33,7 +51,7 @@ const ShowSuccessModal = ({ addedProduct, onClose }) => {
         <div className="w-[160px] h-[220px] flex-shrink-0">
           <img
             src={addedProduct?.images?.[0]?.url}
-            className="w-full h-full object-cover "
+            className="w-full h-full object-cover"
           />
         </div>
         <div className="flex-1 mt-3">
@@ -52,7 +70,7 @@ const ShowSuccessModal = ({ addedProduct, onClose }) => {
                   {(
                     addedProduct?.price *
                     (1 - addedProduct?.discount / 100)
-                  ).toFixed(2)}
+                  ).toFixed(2)}{" "}
                   each
                 </span>
                 <span className="text-red-500 text-xs">
@@ -68,13 +86,67 @@ const ShowSuccessModal = ({ addedProduct, onClose }) => {
         </div>
       </div>
 
+      {recommendedProducts?.length > 0 && (
+        <div className="mb-6">
+          <h3 className="text-lg font-medium mb-4 text-gray-800">
+            Recommended For You
+          </h3>
+          <div className="flex gap-4 overflow-x-auto scrollbar-hidden pb-2">
+            {recommendedProducts?.slice?.(0,7)?.map((product, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 w-[160px] cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => {
+                  onClose();
+                  navigate(`/product/${product.id}`);
+                }}
+              >
+                <div className="w-full h-[200px] mb-2">
+                  <img
+                    src={product.images?.[0]?.url}
+                    alt={product.name}
+                    className="w-full h-full object-cover rounded"
+                  />
+                </div>
+                <h4 className="text-sm font-medium mb-1 line-clamp-2">
+                  {product.name}
+                </h4>
+                <div className="flex items-center gap-1">
+                  {product.discount > 0 ? (
+                    <>
+                      <span className="text-xs text-gray-500 line-through">
+                        ${product.price}
+                      </span>
+                      <span className="text-sm font-medium text-black">
+                        $
+                        {(product.price * (1 - product.discount / 100)).toFixed(
+                          2
+                        )}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-sm font-medium text-black">
+                      ${product.price}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="space-y-3">
-        <button className="w-full py-4 bg-black text-white rounded hover:bg-gray-800 transition-colors">
+        <button
+          onClick={handleCheckout}
+          className="w-full py-4 bg-black text-white rounded hover:bg-gray-800 transition-colors"
+        >
           Review + Checkout
         </button>
         <button
-          onClick={() =>onClose()}
-          className="w-full py-4 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+          onClick={handleContinueShopping}
+          className="w-full py-4 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+        >
           Continue Shopping
         </button>
       </div>

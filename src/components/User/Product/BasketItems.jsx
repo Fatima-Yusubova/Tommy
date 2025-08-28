@@ -44,7 +44,7 @@ const BasketItems = ({ basketItems }) => {
         {basketItems?.[0].items ? (
           basketItems?.[0].items.map((item, i) => (
             <div key={i} className="flex items-start gap-6 mb-8">
-              <div className="h-[200px] w-[120px] flex-shrink-0">
+              <div className="h-[200px] w-[150px] flex-shrink-0">
                 <img
                   src={item?.product?.images?.[0].url}
                   alt=""

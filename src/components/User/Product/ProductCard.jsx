@@ -228,6 +228,7 @@ const ProductCard = ({ item }) => {
       >
         <ShowSuccessModal
           addedProduct={addedProduct}
+          recommendedProducts={addedProduct ? [addedProduct.categoryId] : []}
           onClose={() => setShowSuccessModal(false)}
         />
       </OpenMenu>
