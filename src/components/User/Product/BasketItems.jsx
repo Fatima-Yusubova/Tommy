@@ -36,6 +36,7 @@ const BasketItems = ({ basketItems }) => {
       console.log(error);
     }
   };
+  console.log(basketItems)
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-hidden min-h-0 px-6">

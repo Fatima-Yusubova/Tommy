@@ -100,12 +100,7 @@ const SignIn = () => {
             >
               {isLoading ? "Signing in..." : "Sign in with email and password"}
             </button>
-            <button
-              type="button"
-              className="w-full border border-gray-300 text-black py-4 rounded font-medium text-sm"
-            >
-              Email me a verification code
-            </button>
+            
             <p className="text-sm text-gray-600 text-center mt-6">
               By creating an account, I agree to the <a href="#" className="underline text-[#464C52]">  Terms and Conditions </a> and  <a href="#" className="underline text-[#464C52]"> Privacy Policy</a>.
             </p>

@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { CgSearch } from "react-icons/cg";
 import { LuUserRound } from "react-icons/lu";
 import { HiOutlineShoppingBag } from "react-icons/hi";
-import {  useGetBasketItemsQuery,useGetAllCategoryQuery,useGetAllProductQuery} from "../../../store/eccomerceApi"
+import {
+  useGetBasketItemsQuery,
+  useGetAllCategoryQuery,
+  useGetAllProductQuery,
+} from "../../../store/eccomerceApi";
 import UserMenu from "./UserMenu";
 import OpenMenu from "../../ui/OpenMenu";
 import BasketMenu from "../Product/BasketMenu";
@@ -12,33 +16,33 @@ import { Link } from "react-router";
 import { useSelector } from "react-redux";
 
 const Action = () => {
-  const [bagOpen, setBagOpen] = useState(false)
-  const [userOpen, setUserOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [search, setSearch] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All")
-  const [filteredProducts, setFilteredProducts] = useState([])
-  const { data: basketItems } = useGetBasketItemsQuery()
-  const { data: categories } = useGetAllCategoryQuery()
-  const { data: products } = useGetAllProductQuery()
+  const [bagOpen, setBagOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const { data: basketItems } = useGetBasketItemsQuery();
+  const { data: categories } = useGetAllCategoryQuery();
+  const { data: products } = useGetAllProductQuery();
   //console.log(basketItems)
   const wishlist = useSelector((state) => state.wishlist);
 
-   
-
-   useEffect(() => {
-    let result =products
+  useEffect(() => {
+    let result = products;
     if (search) {
-    result = products.filter((item) =>item.name.toLowerCase().includes(search.toLowerCase()))
+      result = products.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase())
+      );
     }
     if (selectedCategory !== "All") {
       result = result.filter(
         (item) => item.category?.name === selectedCategory
-      )
+      );
     }
-    setFilteredProducts(result)
-  }, [search, selectedCategory, products])
+    setFilteredProducts(result);
+  }, [search, selectedCategory, products]);
   //console.log(filteredProducts)
   return (
     <>
@@ -69,7 +73,7 @@ const Action = () => {
           <Menu strokeWidth={2} />
         </button>
       </div>
-      <OpenMenu open={searchOpen} setOpen={setSearchOpen} width="max-w-2xl">
+      <OpenMenu open={searchOpen} setOpen={setSearchOpen} width="max-w-lg">
         <div className="w-full h-full flex flex-col bg-white">
           <div className="flex justify-end p-6 border-b border-gray-200">
             <button onClick={() => setSearchOpen(false)} className="md:hidden">
@@ -79,11 +83,11 @@ const Action = () => {
           <div className="flex-1 overflow-y-auto p-6">
             <div className="relative mb-8">
               <div className="flex items-center p-4">
-                <CgSearch size={24} className="text-gray-500 mr-3" />
+                <CgSearch size={24} className=" mr-3" />
                 <input
                   type="text"
                   placeholder="What are you looking for..."
-                  className="flex-1 outline-none text-lg placeholder-gray-400"
+                  className="flex-1 outline-none  placeholder-black"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -125,10 +129,7 @@ const Action = () => {
               </div>
             </div>
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {search ? `Search Results for "${search}"` : "All Products"}
-                </h3>
+              <div className="flex items-center justify-between mb-6">
                 {filteredProducts?.length > 0 && (
                   <span className="text-sm text-gray-500">
                     {filteredProducts?.length} items found
@@ -136,46 +137,37 @@ const Action = () => {
                 )}
               </div>
               {filteredProducts?.length > 0 ? (
-                <div className="grid gap-4">
+                <div className="grid grid-cols-2 gap-5  ">
                   {filteredProducts.map((item, i) => (
                     <Link
                       key={i}
                       to={`/product/${item.id}`}
-                      className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all duration-200 group"
+                      className=""
                     >
-                      <div className="w-16 h-16 flex-shrink-0">
+                      {/* Product Image */}
+                      <div className="aspect-[3/4] ">
                         <img
                           src={item.images?.[0]?.url}
-                          className="w-full h-full object-cover rounded-lg"
+                         
+                          className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-900 group-hover:text-black transition-colors line-clamp-2">
+
+                      {/* Product Details */}
+                      <div className="p-4">
+                        <h4 className="font-medium text-gray-900 group-hover:text-black transition-colors line-clamp-2 text-sm mb-2">
                           {item.name}
                         </h4>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {item.category?.name}
-                        </p>
+
                         {item.price && (
-                          <p className="font-medium text-black mt-1">
+                          <p className=" text-black text-sm font-medium">
                             ${item.price}
                           </p>
                         )}
+                      
                       </div>
-                      <button className="text-gray-400 group-hover:text-gray-600 transition-colors">
-                        <ChevronRight />
-                      </button>
                     </Link>
                   ))}
-
-                  {filteredProducts?.length > 10 && (
-                    <div className="text-center py-4">
-                      <p className="text-sm text-gray-500">
-                        Showing first 10 results. Refine your search to see more
-                        specific results.
-                      </p>
-                    </div>
-                  )}
                 </div>
               ) : (
                 <div className="text-center py-12">
@@ -189,6 +181,15 @@ const Action = () => {
                     {search
                       ? `We couldn't find any products matching "${search}". Try different keywords or browse our categories.`
                       : "Type something in the search box to find products."}
+                  </p>
+                </div>
+              )}
+
+              {filteredProducts?.length > 10 && (
+                <div className="text-center py-6 mt-6 border-t border-gray-200">
+                  <p className="text-sm text-gray-500">
+                    Showing first 10 results. Refine your search to see more
+                    specific results.
                   </p>
                 </div>
               )}
