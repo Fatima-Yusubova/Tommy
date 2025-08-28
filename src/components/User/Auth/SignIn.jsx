@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Eye, EyeOff } from "lucide-react";
-import { useLoginMutation } from "../../../store/eccomerceApi";
+import { useLoginMutation, eccomerceApi } from "../../../store/eccomerceApi";
 import { toast } from "react-toastify";
+import { loginUser } from "../../../store/authslice";
+import { useDispatch } from "react-redux";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email().required("Email field cannot be empty")
@@ -16,13 +18,14 @@ const validationSchema = Yup.object().shape({
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
-
+  const dispatch = useDispatch()
   const handleSubmit = async (values, { resetForm }) => {
     try {
       const res = await login(values).unwrap();
       toast.success("Signed in successfully!");
       console.log(res);
-      localStorage.setItem("user", JSON.stringify(res));
+      dispatch(loginUser(res))
+      dispatch(eccomerceApi.util.invalidateTags(["Basket"]));
       resetForm();
     } catch (error) {
       toast.error(error?.data?.message);

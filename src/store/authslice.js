@@ -1,23 +1,38 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const initialState = {
-  user: JSON.parse(localStorage.getItem("user")) || null,
-};
+import { loadWishlist, clearWishlist } from "./wishlistSlice";
+import { resetWishlist } from "./wishlistSlice";
 
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: { user: null },
   reducers: {
-    login: (state, action) => {
+    signin: (state, action) => {
       state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
     },
-    logout: (state) => {
+    signout: (state) => {
       state.user = null;
-      localStorage.removeItem("user");
     },
   },
 });
-
-export const { login, logout } = authSlice.actions;
+export const { signin, signout } = authSlice.actions;
 export default authSlice.reducer;
+export const loginUser = (userData) => (dispatch) => {
+  localStorage.setItem("user", JSON.stringify(userData));
+  dispatch(signin(userData.user));
+  const wishlistKey = `wishlist_${userData.user.id}`;
+  if (!localStorage.getItem(wishlistKey)) {
+    localStorage.setItem(wishlistKey, JSON.stringify([]));
+  }
+
+  dispatch(loadWishlist(userData.user.id));
+};
+
+export const logoutUser = () => (dispatch, getState) => {
+  const user = getState().auth.user;
+  if (user) {
+    dispatch(resetWishlist());
+  }
+  localStorage.removeItem("user");
+  dispatch(signout());
+};
+

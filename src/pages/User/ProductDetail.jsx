@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  useGetProductIdQuery,
-  useAddBasketMutation,
-} from "../../store/eccomerceApi";
+import {useGetProductIdQuery,useAddBasketMutation} from "../../store/eccomerceApi";
 import { Link, useParams } from "react-router";
 import { ChevronRight, Info } from "lucide-react";
 import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
@@ -21,9 +18,6 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { data: product } = useGetProductIdQuery(id);
   const [addBasket, { isLoading }] = useAddBasketMutation();
-  const dispatch = useDispatch();
-  const wishlist = useSelector((state) => state.wishlist);
-  const isWishlist = wishlist.includes(product?.id);
   const [scrollIndex, setScrollIndex] = useState(0);
   const scrollRef = useRef(null)
   useEffect(() => {
@@ -31,15 +25,18 @@ const ProductDetail = () => {
       setSelectedSize("One Size")
     }
   }, [product]);
-
-  const handleWishlist = () => {
-    if (isWishlist) {
-      dispatch(removeFromWishlist(product.id));
-    } else {
-      dispatch(addToWishlist(product.id))
-    }
-  };
-
+const dispatch = useDispatch();
+const user = useSelector((state) => state.auth.user);
+const wishlist = useSelector((state) => state.wishlist);
+const isWishlist = wishlist.includes(product?.id);
+const handleWishlist = () => {
+  if (!user) return;
+  if (isWishlist) {
+    dispatch(removeFromWishlist({ userId: user.id, productId: product.id }))
+  } else {
+    dispatch(addToWishlist({ userId: user.id, productId: product.id }))
+  }
+}
   const handleBasket = async (id) => {
     let flag = true;
     if (product?.colors?.length > 0 && !selectedColor) {
@@ -50,8 +47,7 @@ const ProductDetail = () => {
       setTouched((prev) => ({ ...prev, size: true }));
       flag = false;
     }
-    if (!flag) return;
-
+    if (!flag) return
     try {
       const response = await addBasket({
         id,

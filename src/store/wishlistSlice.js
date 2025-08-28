@@ -1,28 +1,52 @@
 import { createSlice } from "@reduxjs/toolkit";
-const initialState = JSON.parse(localStorage.getItem("wishlist") || "[]");
+
+const getUserWishlist = (userId) => {
+  return JSON.parse(localStorage.getItem(`wishlist_${userId}`)) || [];
+};
+
+const setUserWishlist = (userId, wishlist) => {
+  localStorage.setItem(`wishlist_${userId}`, JSON.stringify(wishlist));
+};
+
 const wishlistSlice = createSlice({
   name: "wishlist",
-  initialState,
+  initialState: [],
   reducers: {
+    loadWishlist: (state, action) => {
+      return getUserWishlist(action.payload) || [];
+    },
     addToWishlist: (state, action) => {
-      if (!state.includes(action.payload)) {
-        const newState = [...state, action.payload];
-        localStorage.setItem("wishlist", JSON.stringify(newState))
+      const { userId, productId } = action.payload;
+      if (!state.includes(productId)) {
+        const newState = [...state, productId];
+        setUserWishlist(userId, newState);
         return newState;
       }
-      return state
+      return state;
     },
     removeFromWishlist: (state, action) => {
-      const newState = state.filter((id) => id !== action.payload)
-      localStorage.setItem("wishlist", JSON.stringify(newState))
+      const { userId, productId } = action.payload;
+      const newState = state.filter((id) => id !== productId);
+      setUserWishlist(userId, newState);
       return newState;
     },
-    clearWishlist: () => {
-      localStorage.setItem("wishlist", JSON.stringify([]));
-      return []
-    }
+    clearWishlist: (state, action) => {
+      const userId = action.payload;
+      setUserWishlist(userId, []);
+      return [];
+    },
+    resetWishlist: () => {
+      return [];
+    },
   },
 });
 
-export const { addToWishlist, removeFromWishlist, clearWishlist } = wishlistSlice.actions
-export default wishlistSlice.reducer
+export const {
+  loadWishlist,
+  addToWishlist,
+  removeFromWishlist,
+  clearWishlist,
+  resetWishlist,
+} = wishlistSlice.actions;
+
+export default wishlistSlice.reducer;

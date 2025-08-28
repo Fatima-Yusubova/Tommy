@@ -19,6 +19,7 @@ const ProductCard = ({ item }) => {
   const [swiper, setSwiper] = useState(null);
   const [view, setView] = useState(false);
 
+
   const handleMouseEnter = () => {
     setHovered(true);
     if (swiper && item?.images?.length > 1) {
@@ -43,10 +44,7 @@ const ProductCard = ({ item }) => {
   const goToPrev = (e) => {
     e.stopPropagation();
     if (swiper) swiper.slidePrev();
-  };
-
-
-
+  }
   const swiperConfig = {
     modules: [Navigation, Pagination],
     navigation: {
@@ -64,16 +62,20 @@ const ProductCard = ({ item }) => {
     allowTouchMove: true,
   };
   const dispatch = useDispatch()
-  const wishlist = useSelector((state) => state.wishlist)
-  const isWishlist = wishlist.includes(item?.id)
+  const user = useSelector((state) => state.auth.user);
+  const wishlist = useSelector((state) => state.wishlist);
+  const isWishlist = wishlist.includes(item?.id);
   const handleWishlist = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (isWishlist) {
-      dispatch(removeFromWishlist(item.id))
-    } else {
-      dispatch(addToWishlist(item.id))
-    }
+   e.preventDefault()
+   e.stopPropagation()
+   if (!user) return
+   console.log(user)
+
+   if (isWishlist) {
+     dispatch(removeFromWishlist({ userId: user?.id, productId: item.id }));
+   } else {
+     dispatch(addToWishlist({ userId: user?.id, productId: item.id }));
+   }
   }
 
   return (

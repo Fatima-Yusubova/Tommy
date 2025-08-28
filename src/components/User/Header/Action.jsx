@@ -23,7 +23,10 @@ const Action = () => {
   const { data: categories } = useGetAllCategoryQuery()
   const { data: products } = useGetAllProductQuery()
   //console.log(basketItems)
-   const wishlist = useSelector((state) => state.wishlist)
+  const wishlist = useSelector((state) => state.wishlist);
+
+   
+
    useEffect(() => {
     let result =products
     if (search) {
