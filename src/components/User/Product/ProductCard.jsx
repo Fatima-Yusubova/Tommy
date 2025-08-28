@@ -4,14 +4,18 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import OpenMenu from "../../ui/OpenMenu";
 import QuickviewContent from "./QuickviewContent";
+import ShowSuccessModal from "./ShowSuccessModal"; // success modal burda idarə olunacaq
 import { Link } from "react-router";
-import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io"
-import { colorMapping } from "../../../constant/constant"
+import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
+import { colorMapping } from "../../../constant/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { addToWishlist ,removeFromWishlist } from "../../../store/wishlistSlice";
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from "../../../store/wishlistSlice";
 
 const ProductCard = ({ item }) => {
   const [hovered, setHovered] = useState(false);
@@ -19,6 +23,9 @@ const ProductCard = ({ item }) => {
   const [swiper, setSwiper] = useState(null);
   const [view, setView] = useState(false);
 
+  // ✅ Success Modal üçün state-lər
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [addedProduct, setAddedProduct] = useState(null);
 
   const handleMouseEnter = () => {
     setHovered(true);
@@ -44,7 +51,8 @@ const ProductCard = ({ item }) => {
   const goToPrev = (e) => {
     e.stopPropagation();
     if (swiper) swiper.slidePrev();
-  }
+  };
+
   const swiperConfig = {
     modules: [Navigation, Pagination],
     navigation: {
@@ -61,22 +69,23 @@ const ProductCard = ({ item }) => {
     onSlideChange: (swiper) => setCurrentSlide(swiper.activeIndex),
     allowTouchMove: true,
   };
-  const dispatch = useDispatch()
+
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const wishlist = useSelector((state) => state.wishlist);
   const isWishlist = wishlist.includes(item?.id);
-  const handleWishlist = (e) => {
-   e.preventDefault()
-   e.stopPropagation()
-   if (!user) return
-   console.log(user)
 
-   if (isWishlist) {
-     dispatch(removeFromWishlist({ userId: user?.id, productId: item.id }));
-   } else {
-     dispatch(addToWishlist({ userId: user?.id, productId: item.id }));
-   }
-  }
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) return;
+
+    if (isWishlist) {
+      dispatch(removeFromWishlist({ userId: user?.id, productId: item.id }));
+    } else {
+      dispatch(addToWishlist({ userId: user?.id, productId: item.id }));
+    }
+  };
 
   return (
     <div className="cursor-pointer w-full">
@@ -122,7 +131,6 @@ const ProductCard = ({ item }) => {
             />
           </Link>
         )}
-
         {hovered && item?.images?.length > 1 && (
           <>
             <button
@@ -139,7 +147,6 @@ const ProductCard = ({ item }) => {
             </button>
           </>
         )}
-
         {hovered && (
           <div className="hidden lg:flex absolute inset-0 z-5 items-center justify-center">
             <button
@@ -190,9 +197,7 @@ const ProductCard = ({ item }) => {
               <div
                 key={i}
                 className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-gray-300 cursor-pointer hover:border-black hover:scale-110 transition-all duration-200 flex-shrink-0"
-                style={{
-                  backgroundColor: colorMapping[color],
-                }}
+                style={{ backgroundColor: colorMapping[color] }}
                 title={color}
               />
             ))}
@@ -206,8 +211,25 @@ const ProductCard = ({ item }) => {
           </div>
         )}
       </div>
-      <OpenMenu open={view} setOpen={setView} width="max-w-4xl">
-        <QuickviewContent item={item} closeMenu={() => setView(false)} />
+      <OpenMenu open={view} setOpen={setView}>
+        <QuickviewContent
+          item={item}
+          closeMenu={() => setView(false)}
+          onSuccess={(product) => {
+            setAddedProduct(product);
+            setShowSuccessModal(true);
+          }}
+        />
+      </OpenMenu>
+      <OpenMenu
+        open={showSuccessModal}
+        setOpen={setShowSuccessModal}
+        width="max-w-3xl"
+      >
+        <ShowSuccessModal
+          addedProduct={addedProduct}
+          onClose={() => setShowSuccessModal(false)}
+        />
       </OpenMenu>
     </div>
   );

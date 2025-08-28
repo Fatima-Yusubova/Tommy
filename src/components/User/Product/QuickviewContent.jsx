@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import {
-  useGetProductIdQuery,
-  useAddBasketMutation,
-} from "../../../store/eccomerceApi";
+import { useGetProductIdQuery,useAddBasketMutation} from "../../../store/eccomerceApi";
 import { IoClose } from "react-icons/io5";
 import { Info } from "lucide-react";
 import { colorMapping } from "../../../constant/constant";
 
-const QuickviewContent = ({ item, closeMenu }) => {
+const QuickviewContent = ({ item, closeMenu, onSuccess }) => {
   const [selectedColor, setSelectedColor] = useState();
   const [selectedSize, setSelectedSize] = useState();
   const [quantity, setQuantity] = useState(1);
   const [touched, setTouched] = useState({ size: false, color: false });
+
   const navigate = useNavigate();
   const { data: product } = useGetProductIdQuery(item?.id);
   const [addBasket, { isLoading }] = useAddBasketMutation();
@@ -29,27 +27,34 @@ const QuickviewContent = ({ item, closeMenu }) => {
   };
 
   const handleBasket = async (id) => {
-    let flag = true
+    let flag = true;
     if (product?.colors?.length > 0 && !selectedColor) {
-      setTouched((prev) => ({ ...prev, color: true }))
-      flag = false
+      setTouched((prev) => ({ ...prev, color: true }));
+      flag = false;
     }
 
     if (product?.sizes?.length > 0 && !selectedSize) {
-      setTouched((prev) => ({ ...prev, size: true }))
-      flag= false
+      setTouched((prev) => ({ ...prev, size: true }));
+      flag = false;
     }
-    if (!flag) return
+    if (!flag) return;
 
     try {
-      const response = await addBasket({
+      await addBasket({
         id,
         color: selectedColor,
         size: selectedSize || "One Size",
         quantity,
-      });
+      })
       closeMenu();
-      console.log(response);
+      setTimeout(() => {
+        onSuccess({
+          ...product,
+          selectedColor,
+          selectedSize: selectedSize || "One Size",
+          quantity,
+        });
+      }, 300);
     } catch (error) {
       console.error(error);
     }
@@ -171,6 +176,7 @@ const QuickviewContent = ({ item, closeMenu }) => {
                 </p>
               )}
             </div>
+
             <div className="space-y-3 mb-6">
               <div className="flex items-center gap-3">
                 <select
@@ -203,7 +209,6 @@ const QuickviewContent = ({ item, closeMenu }) => {
           </div>
         </div>
       </div>
-
       <div className="hidden md:flex gap-3 h-full">
         <div className="basis-[50%] overflow-y-auto h-screen scrollbar-hidden relative">
           {product?.images?.map((item, i) => (
@@ -316,6 +321,7 @@ const QuickviewContent = ({ item, closeMenu }) => {
               {isLoading ? "Adding..." : "Add to Bag"}
             </button>
           </div>
+
           <div>
             <button
               className="w-full py-4 border border-black rounded-sm mt-5 hover:underline"
