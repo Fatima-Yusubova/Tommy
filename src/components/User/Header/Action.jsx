@@ -10,8 +10,9 @@ import {
 import UserMenu from "./UserMenu";
 import OpenMenu from "../../ui/OpenMenu";
 import BasketMenu from "../Product/BasketMenu";
+import WishlistContent from "../Product/WishlistContent"; 
 import MobileNavbar from "./MobileNavbar";
-import { ChevronRight, Heart, Menu, X } from "lucide-react";
+import { Heart, Menu, X } from "lucide-react";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
 
@@ -20,13 +21,13 @@ const Action = () => {
   const [userOpen, setUserOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [wishlistOpen, setWishlistOpen] = useState(false); // Yeni state
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const { data: basketItems } = useGetBasketItemsQuery();
   const { data: categories } = useGetAllCategoryQuery();
   const { data: products } = useGetAllProductQuery();
-  //console.log(basketItems)
   const wishlist = useSelector((state) => state.wishlist);
 
   useEffect(() => {
@@ -43,14 +44,17 @@ const Action = () => {
     }
     setFilteredProducts(result);
   }, [search, selectedCategory, products]);
-  //console.log(filteredProducts)
+
   return (
     <>
       <div className="flex items-center gap-5 relative">
         <button onClick={() => setSearchOpen(true)}>
           <CgSearch size={20} />
         </button>
-        <button className="relative">
+        <button
+          className="relative"
+          onClick={() => setWishlistOpen(true)}
+        >
           <Heart size={20} />
           {wishlist.length > 0 && (
             <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
@@ -139,32 +143,22 @@ const Action = () => {
               {filteredProducts?.length > 0 ? (
                 <div className="grid grid-cols-2 gap-5  ">
                   {filteredProducts.map((item, i) => (
-                    <Link
-                      key={i}
-                      to={`/product/${item.id}`}
-                      className=""
-                    >
-                      {/* Product Image */}
+                    <Link key={i} to={`/product/${item.id}`} className="">
                       <div className="aspect-[3/4] ">
                         <img
                           src={item.images?.[0]?.url}
-                         
                           className="w-full h-full object-cover"
                         />
                       </div>
-
-                      {/* Product Details */}
                       <div className="p-4">
                         <h4 className="font-medium text-gray-900 group-hover:text-black transition-colors line-clamp-2 text-sm mb-2">
                           {item.name}
                         </h4>
-
                         {item.price && (
                           <p className=" text-black text-sm font-medium">
                             ${item.price}
                           </p>
                         )}
-                      
                       </div>
                     </Link>
                   ))}
@@ -184,7 +178,6 @@ const Action = () => {
                   </p>
                 </div>
               )}
-
               {filteredProducts?.length > 10 && (
                 <div className="text-center py-6 mt-6 border-t border-gray-200">
                   <p className="text-sm text-gray-500">
@@ -197,15 +190,15 @@ const Action = () => {
           </div>
         </div>
       </OpenMenu>
-
       <OpenMenu open={menuOpen} setOpen={setMenuOpen}>
         <MobileNavbar setMenuOpen={setMenuOpen} />
       </OpenMenu>
-
       <OpenMenu open={bagOpen} setOpen={setBagOpen} width="max-w-md">
         <BasketMenu basketItems={basketItems} setBagOpen={setBagOpen} />
       </OpenMenu>
-
+      <OpenMenu open={wishlistOpen} setOpen={setWishlistOpen} width="max-w-xl">
+        <WishlistContent setWishlistOpen={setWishlistOpen} />
+      </OpenMenu>
       {userOpen && (
         <div className="absolute z-30 right-0 top-[110px]">
           <UserMenu />

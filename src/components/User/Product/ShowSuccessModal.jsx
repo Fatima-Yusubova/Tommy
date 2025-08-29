@@ -1,12 +1,12 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { IoClose } from "react-icons/io5";
 import { useGetProductsByIdQuery } from "../../../store/eccomerceApi";
 const ShowSuccessModal = ({addedProduct,onClose}) => {
     console.log(addedProduct)
      const { data: recommendedProducts = [] } = useGetProductsByIdQuery(
        addedProduct?.category?.id,
-       { skip: !addedProduct?.category?.id } // addedProduct yoxdursa çağırmasın
+       { skip: !addedProduct?.category?.id } 
      );
   const navigate = useNavigate();
 
@@ -14,10 +14,6 @@ const ShowSuccessModal = ({addedProduct,onClose}) => {
   const handleCheckout = () => {
     onClose();
     navigate("/checkout");
-  };
-
-  const handleContinueShopping = () => {
-    onClose();
   };
 
   return (
@@ -92,7 +88,7 @@ const ShowSuccessModal = ({addedProduct,onClose}) => {
             Recommended For You
           </h3>
           <div className="flex gap-4 overflow-x-auto scrollbar-hidden pb-2">
-            {recommendedProducts?.slice?.(0,7)?.map((product, index) => (
+            {recommendedProducts?.slice?.(0, 7)?.map((product, index) => (
               <div
                 key={index}
                 className="flex-shrink-0 w-[160px] cursor-pointer hover:opacity-80 transition-opacity"
@@ -105,7 +101,7 @@ const ShowSuccessModal = ({addedProduct,onClose}) => {
                   <img
                     src={product.images?.[0]?.url}
                     alt={product.name}
-                    className="w-full h-full object-cover rounded"
+                    className="w-full h-full object-cover "
                   />
                 </div>
                 <h4 className="text-sm font-medium mb-1 line-clamp-2">
@@ -137,14 +133,17 @@ const ShowSuccessModal = ({addedProduct,onClose}) => {
       )}
 
       <div className="space-y-3">
+        <Link to={'/basket'}>
+          <button
+            onClick={handleCheckout}
+            className="w-full py-4 bg-black text-white rounded hover:bg-gray-800 transition-colors"
+          >
+            Review + Checkout
+          </button>
+        </Link>
+
         <button
-          onClick={handleCheckout}
-          className="w-full py-4 bg-black text-white rounded hover:bg-gray-800 transition-colors"
-        >
-          Review + Checkout
-        </button>
-        <button
-          onClick={handleContinueShopping}
+          onClick={() =>onClose()}
           className="w-full py-4 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
         >
           Continue Shopping
