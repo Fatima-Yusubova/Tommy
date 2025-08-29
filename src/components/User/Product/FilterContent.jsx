@@ -11,21 +11,16 @@ const FilterContent = ({
   handleSizeFilter,
   handlePriceFilter,
   onClearAll,
+  selectedSort, 
+  onSortChange, 
 }) => {
   const [openSection, setOpenSection] = useState(activeFilter);
-  const [selectedSort, setSelectedSort] = useState("Recommended");
 
   useEffect(() => {
     setOpenSection(activeFilter);
   }, [activeFilter]);
 
-  const sortOptions = [
-    "Recommended",
-    "Newest",
-    "Price Low To High",
-    "Price High to Low",
-    "Top Rated",
-  ];
+  const sortOptions = ["Recommended", "Price Low To High", "Price High to Low"];
 
   const priceRanges = [
     { min: 0, max: 25, label: "$0 - $25" },
@@ -70,13 +65,13 @@ const FilterContent = ({
                   <label
                     key={i}
                     className="flex items-center gap-3 cursor-pointer select-none"
-                    onClick={() => setSelectedSort(option)}
+                    onClick={() => onSortChange(option)} // Bu dəyişiklik
                   >
                     <input
                       type="radio"
                       name="sort"
-                      checked={selectedSort === option}
-                      onChange={() => setSelectedSort(option)}
+                      checked={selectedSort === option} // Parent state-dən gəlir
+                      onChange={() => onSortChange(option)} // Parent handler
                       className="hidden peer"
                     />
                     <span className="w-5 h-5 rounded-full border border-gray-500 flex items-center justify-center">
@@ -92,6 +87,7 @@ const FilterContent = ({
               </div>
             )}
           </div>
+
           <div>
             <div
               className="flex justify-between items-center border-b border-gray-300 py-5 cursor-pointer"
@@ -214,6 +210,7 @@ const FilterContent = ({
               </div>
             )}
           </div>
+
           {(filters.minPrice !== null || filters.maxPrice !== null) && (
             <div className="border-t border-gray-300 pt-4 mt-4">
               <h4 className="text-sm font-medium mb-3">Selected Price:</h4>

@@ -200,7 +200,7 @@ const Action = () => {
         <WishlistContent setWishlistOpen={setWishlistOpen} />
       </OpenMenu>
       {userOpen && (
-        <div className="absolute z-30 right-0 top-[110px]">
+        <div className="absolute z-30 right-0 top-[140px]  lg:top-[110px]">
           <UserMenu />
         </div>
       )}

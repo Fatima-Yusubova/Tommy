@@ -82,12 +82,30 @@ const ShowSuccessModal = ({addedProduct,onClose}) => {
         </div>
       </div>
 
+      <div className="space-y-3 my-10">
+        <Link to={"/basket"}>
+          <button
+            onClick={handleCheckout}
+            className="w-full py-5 bg-black text-white rounded hover:bg-gray-800 transition-colors my-4"
+          >
+            Review + Checkout
+          </button>
+        </Link>
+
+        <button
+          onClick={() => onClose()}
+          className="w-full py-5 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+        >
+          Continue Shopping
+        </button>
+      </div>
+
       {recommendedProducts?.length > 0 && (
         <div className="mb-6">
-          <h3 className="text-lg font-medium mb-4 text-gray-800">
+          <h3 className="text-xl font-medium mb-4 text-gray-600">
             Recommended For You
           </h3>
-          <div className="flex gap-4 overflow-x-auto scrollbar-hidden pb-2">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hidden pb-2">
             {recommendedProducts?.slice?.(0, 7)?.map((product, index) => (
               <div
                 key={index}
@@ -97,7 +115,7 @@ const ShowSuccessModal = ({addedProduct,onClose}) => {
                   navigate(`/product/${product.id}`);
                 }}
               >
-                <div className="w-full h-[200px] mb-2">
+                <div className="w-full h-[220px] mb-2">
                   <img
                     src={product.images?.[0]?.url}
                     alt={product.name}
@@ -131,24 +149,6 @@ const ShowSuccessModal = ({addedProduct,onClose}) => {
           </div>
         </div>
       )}
-
-      <div className="space-y-3">
-        <Link to={'/basket'}>
-          <button
-            onClick={handleCheckout}
-            className="w-full py-4 bg-black text-white rounded hover:bg-gray-800 transition-colors"
-          >
-            Review + Checkout
-          </button>
-        </Link>
-
-        <button
-          onClick={() =>onClose()}
-          className="w-full py-4 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-        >
-          Continue Shopping
-        </button>
-      </div>
     </div>
   );
 };

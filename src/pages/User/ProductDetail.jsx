@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import {useGetProductIdQuery,useAddBasketMutation} from "../../store/eccomerceApi";
+import {
+  useGetProductIdQuery,
+  useAddBasketMutation,
+} from "../../store/eccomerceApi";
 import { Link, useParams } from "react-router";
 import { ChevronRight, Info } from "lucide-react";
 import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
@@ -9,6 +12,8 @@ import { colorMapping } from "../../constant/constant";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist, removeFromWishlist } from "../../store/wishlistSlice";
 import ShowSuccessModal from "../../components/User/Product/ShowSuccessModal";
+import ErrorPage from "../../components/ui/ErrorPage";
+import CubLoader from "../../components/ui/CubLoader";
 
 const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState();
@@ -17,29 +22,33 @@ const ProductDetail = () => {
   const [touched, setTouched] = useState({ size: false, color: false });
   const [flag, setFlag] = useState(false);
   const { id } = useParams();
-  const { data: product } = useGetProductIdQuery(id);
-  const [addBasket, { isLoading }] = useAddBasketMutation();
+  const { data: product, isLoading, isError, error } = useGetProductIdQuery(id);
+  const [addBasket, { isLoading: isAddingToBasket }] = useAddBasketMutation();
   const [scrollIndex, setScrollIndex] = useState(0);
-  const scrollRef = useRef(null)
+  const scrollRef = useRef(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [addedProduct, setAddedProduct] = useState(null);
+
   useEffect(() => {
     if (product && (!product.sizes || product.sizes.length === 0)) {
-      setSelectedSize("One Size")
+      setSelectedSize("One Size");
     }
   }, [product]);
-const dispatch = useDispatch();
-const user = useSelector((state) => state.auth.user);
-const wishlist = useSelector((state) => state.wishlist);
-const isWishlist = wishlist.includes(product?.id);
-const handleWishlist = () => {
-  if (!user) return;
-  if (isWishlist) {
-    dispatch(removeFromWishlist({ userId: user.id, productId: product.id }))
-  } else {
-    dispatch(addToWishlist({ userId: user.id, productId: product.id }))
-  }
-}
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const wishlist = useSelector((state) => state.wishlist);
+  const isWishlist = wishlist.includes(product?.id);
+
+  const handleWishlist = () => {
+    if (!user) return;
+    if (isWishlist) {
+      dispatch(removeFromWishlist({ userId: user.id, productId: product.id }));
+    } else {
+      dispatch(addToWishlist({ userId: user.id, productId: product.id }));
+    }
+  };
+
   const handleBasket = async (id) => {
     let flag = true;
     if (product?.colors?.length > 0 && !selectedColor) {
@@ -50,7 +59,7 @@ const handleWishlist = () => {
       setTouched((prev) => ({ ...prev, size: true }));
       flag = false;
     }
-    if (!flag) return
+    if (!flag) return;
     try {
       const response = await addBasket({
         id,
@@ -59,17 +68,23 @@ const handleWishlist = () => {
         quantity,
       });
       console.log(response);
-       setAddedProduct({
-         ...product,
-         selectedColor,
-         selectedSize: selectedSize || "One Size",
-         quantity,
-       });
-       setShowSuccessModal(true);
+      setAddedProduct({
+        ...product,
+        selectedColor,
+        selectedSize: selectedSize || "One Size",
+        quantity,
+      });
+      setShowSuccessModal(true);
     } catch (error) {
       console.error(error);
     }
   };
+  if (isLoading) {
+    return <CubLoader />;
+  }
+  if (isError || !product) {
+    return <ErrorPage />;
+  }
 
   return (
     <div className="flex gap-[100px] flex-col md:flex-row py-10">
@@ -205,10 +220,10 @@ const handleWishlist = () => {
           </select>
           <button
             onClick={() => handleBasket(product?.id)}
-            disabled={isLoading}
+            disabled={isAddingToBasket}
             className="py-3 w-full bg-black text-white rounded-sm hover:underline disabled:opacity-50"
           >
-            {isLoading ? "Adding..." : "Add to Bag"}
+            {isAddingToBasket ? "Adding..." : "Add to Bag"}
           </button>
         </div>
         <button

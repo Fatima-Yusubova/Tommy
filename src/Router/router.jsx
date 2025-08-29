@@ -30,6 +30,7 @@ export const route = createBrowserRouter(
       >
         <Route path="/admin/category" element={<Category />} />
         <Route path="/admin/product" element={<Product />} />
+        
       </Route>
     </>
   )

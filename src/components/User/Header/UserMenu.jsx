@@ -33,12 +33,15 @@ const UserMenu = () => {
           </>
         ) : (
           <>
-            <button className="relative overflow-hidden group pb-1.5">
+            <button
+              onClick={() => setAccount("signin")}
+              className="relative overflow-hidden group pb-1.5"
+            >
               Sign In
               <span className="absolute bottom-0 left-0 w-0 h-px bg-white transition-all duration-300 group-hover:w-full"></span>
             </button>
             <button
-              onClick={() => setAccount(true)}
+              onClick={() => setAccount("signup")}
               className="relative overflow-hidden group pb-1.5"
             >
               Create Account
@@ -53,7 +56,7 @@ const UserMenu = () => {
       </div>
 
       <OpenMenu open={account} setOpen={setAccount} width="max-w-xl">
-        <AccountMenu setAccount={setAccount} />
+        <AccountMenu  setAccount={setAccount} activeTab={account === "signin" ? "signin" : "signup"} />
       </OpenMenu>
     </div>
   );

@@ -11,7 +11,7 @@ const Copyright = () => {
       <div className="flex gap-1 items-center flex-wrap py-5">
         <a
           href="#"
-          class="text-xs font-medium text-black 
+          className="text-xs font-medium text-black 
                       text-center sm:text-left"
         >
           Terms &amp; Conditions
@@ -36,51 +36,51 @@ const Copyright = () => {
           Privacy Commitment
         </a>
 
-        <span class="inline font-medium text-black text-xs">|</span>
+        <span className="inline font-medium text-black text-xs">|</span>
 
         <a
           href="#"
-          class="text-xs text-black font-medium 
+          className="text-xs text-black font-medium 
                       text-center sm:text-left"
         >
           Interest Based Ads
         </a>
 
-        <span class="inline text-black text-xs">|</span>
+        <span className="inline text-black text-xs">|</span>
 
         <a
           href="#"
-          class="text-xs text-black  font-medium
+          className="text-xs text-black  font-medium
                       text-center sm:text-left lg:whitespace-nowrap"
         >
           Do Not Sell Or Share My Personal Information
         </a>
 
-        <span class="inline text-black text-xs">|</span>
+        <span className="inline text-black text-xs">|</span>
 
         <a
           href="#"
-          class="text-xs text-black font-medium
+          className="text-xs text-black font-medium
                       text-center sm:text-left lg:whitespace-nowrap"
         >
           PVH Corp. Joint Modern Slavery Act Statement
         </a>
 
-        <span class="inline text-black text-xs">|</span>
+        <span className="inline text-black text-xs">|</span>
 
         <a
           href="#"
-          class="text-xs text-black font-medium
+          className="text-xs text-black font-medium
                       text-center sm:text-left"
         >
           Brand Protection
         </a>
 
-        <span class="inline text-black text-xs">|</span>
+        <span className="inline text-black text-xs">|</span>
 
         <a
           href="#"
-          class="text-xs text-black  font-medium
+          className="text-xs text-black  font-medium
                       text-center sm:text-left"
         >
           Accessibility

@@ -23,7 +23,6 @@ const ProductCard = ({ item }) => {
   const [swiper, setSwiper] = useState(null);
   const [view, setView] = useState(false);
 
-  // ✅ Success Modal üçün state-lər
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [addedProduct, setAddedProduct] = useState(null);
 
@@ -228,7 +227,7 @@ const ProductCard = ({ item }) => {
       >
         <ShowSuccessModal
           addedProduct={addedProduct}
-          recommendedProducts={addedProduct ? [addedProduct.categoryId] : []}
+          recommendedProducts={addedProduct ? [addedProduct.category.id] : []}
           onClose={() => setShowSuccessModal(false)}
         />
       </OpenMenu>

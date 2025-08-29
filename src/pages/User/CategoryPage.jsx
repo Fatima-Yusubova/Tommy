@@ -6,11 +6,12 @@ import {
   useGetAllCategoryQuery,
 } from "../../store/eccomerceApi";
 import ProductCard from "../../components/User/Product/ProductCard";
-import { SlidersHorizontal, ChevronDown } from "lucide-react";
+import { SlidersHorizontal, ChevronDown, ChevronUp } from "lucide-react";
 import OpenMenu from "../../components/ui/OpenMenu";
 import FilterContent from "../../components/User/Product/FilterContent";
 import CubLoader from "../../components/ui/CubLoader";
 import Tommyjeans from "./Tommyjeans";
+import ErrorPage from "../../components/ui/ErrorPage";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
@@ -20,11 +21,12 @@ const CategoryPage = () => {
     data: allCategoryProducts,
     isLoading: isCategoryLoading,
     isFetching,
-  } = useGetProductsByIdQuery(categoryId, { refetchOnMountOrArgChange: true });
+  } = useGetProductsByIdQuery(categoryId);
 
   const [view, setView] = useState(false);
   const [activeFilter, setActiveFilter] = useState(null);
   const [selectedSort, setSelectedSort] = useState("Recommended");
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const [filters, setFilters] = useState({
     brandId: 1,
     colors: [],
@@ -33,6 +35,28 @@ const CategoryPage = () => {
     maxPrice: null,
     sort: "Recommended",
   });
+  useEffect(() => {
+    const toggleScrollTop = () => {
+      if (window.pageYOffset > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", toggleScrollTop);
+
+    return () => {
+      window.removeEventListener("scroll", toggleScrollTop);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   const getCurrentCategory = () => {
     if (allCategoryProducts && allCategoryProducts.length > 0) {
@@ -92,9 +116,13 @@ const CategoryPage = () => {
     setActiveFilter(null);
   };
 
-  const handleSortChange = (e) => {
-    setSelectedSort(e.target.value);
-    setFilters((prev) => ({ ...prev, sort: e.target.value }));
+  const handleSortChange = (sortValue) => {
+    setSelectedSort(sortValue);
+    setFilters((prev) => ({ ...prev, sort: sortValue }));
+  };
+
+  const handleMobileSortChange = (sortValue) => {
+    handleSortChange(sortValue);
   };
 
   const handleColorFilter = (colorName) => {
@@ -135,6 +163,7 @@ const CategoryPage = () => {
       minPrice: null,
       maxPrice: null,
     });
+    setSelectedSort("Recommended");
   };
 
   const [showLoader, setShowLoader] = useState(false);
@@ -157,9 +186,13 @@ const CategoryPage = () => {
     return <CubLoader />;
   }
 
-  // Tommy Jeans üçün sadələşdirilmiş yoxlama
   if (currentCategory && currentCategory.name === "Tommy Jeans") {
     return <Tommyjeans categoryId={categoryId} category={currentCategory} />;
+  }
+
+  // Məhsul tapılmadıqda ErrorPage göstər
+  if (!showLoader && displayProducts && displayProducts.length === 0) {
+    return <ErrorPage />;
   }
 
   return (
@@ -243,7 +276,7 @@ const CategoryPage = () => {
               <div className="relative">
                 <select
                   value={selectedSort}
-                  onChange={handleSortChange}
+                  onChange={(e) => handleSortChange(e.target.value)}
                   className="appearance-none flex items-center gap-2 px-4 py-3 border border-gray-300 rounded-3xl text-sm cursor-pointer hover:border-gray-400 pr-8"
                 >
                   {sorts.map((option, i) => (
@@ -333,6 +366,18 @@ const CategoryPage = () => {
           Load More
         </button>
       </div>
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 bg-white text-black w-16 h-16 rounded-full shadow-lg hover:shadow-xl border-2 border-gray-200 hover:border-gray-300 transition-all duration-300 z-50 hover:scale-105 flex flex-col items-center justify-center"
+          aria-label="Scroll to top"
+        >
+          <div className="text-sm font-medium ">
+            <span><ChevronUp/></span>
+            <span >Top</span>
+          </div>
+        </button>
+      )}
 
       <OpenMenu open={view} setOpen={setView} width="max-w-lg">
         <FilterContent
@@ -344,6 +389,8 @@ const CategoryPage = () => {
           handlePriceFilter={handlePriceFilter}
           onClearAll={clearAllFilters}
           priceRanges={priceRanges}
+          selectedSort={selectedSort}
+          onSortChange={handleMobileSortChange}
         />
       </OpenMenu>
     </div>
