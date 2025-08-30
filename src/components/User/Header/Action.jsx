@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import { CgSearch } from "react-icons/cg";
 import { LuUserRound } from "react-icons/lu";
 import { HiOutlineShoppingBag } from "react-icons/hi";
-import {
-  useGetBasketItemsQuery,
-  useGetAllCategoryQuery,
-  useGetAllProductQuery,
-} from "../../../store/eccomerceApi";
+import {useGetBasketItemsQuery,useGetAllCategoryQuery,useGetAllProductQuery} from "../../../store/eccomerceApi";
 import UserMenu from "./UserMenu";
 import OpenMenu from "../../ui/OpenMenu";
 import BasketMenu from "../Product/BasketMenu";

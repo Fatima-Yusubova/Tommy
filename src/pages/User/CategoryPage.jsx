@@ -27,6 +27,9 @@ const CategoryPage = () => {
   const [activeFilter, setActiveFilter] = useState(null);
   const [selectedSort, setSelectedSort] = useState("Recommended");
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [itemsPerPage] = useState(8);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [filters, setFilters] = useState({
     brandId: 1,
     colors: [],
@@ -35,6 +38,7 @@ const CategoryPage = () => {
     maxPrice: null,
     sort: "Recommended",
   });
+
   useEffect(() => {
     const toggleScrollTop = () => {
       if (window.pageYOffset > 300) {
@@ -63,11 +67,11 @@ const CategoryPage = () => {
       return allCategoryProducts[0].category;
     }
     if (category) {
-      const findCategoryById = (categories, targetId) => {
+      const findCategoryById = (categories, id) => {
         for (const cat of categories) {
-          if (+cat.id === +targetId) return cat;
+          if (+cat.id === +id) return cat;
           if (cat.children) {
-            const found = findCategoryById(cat.children, targetId);
+            const found = findCategoryById(cat.children, id);
             if (found) return found;
           }
         }
@@ -96,7 +100,15 @@ const CategoryPage = () => {
   const filteredByCategory = actvFilter
     ? filteredProducts?.filter((item) => +item.category.id === +categoryId)
     : "";
-  const displayProducts = actvFilter ? filteredByCategory : allCategoryProducts;
+  const allProducts = actvFilter ? filteredByCategory : allCategoryProducts;
+
+  const totalItems = allProducts?.length || 0;
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const startIndex = 0;
+  const endIndex = currentPage * itemsPerPage;
+  const displayProducts = allProducts?.slice(startIndex, endIndex);
+
+  const moreItems = currentPage < totalPages;
 
   const sorts = ["Recommended", "Price Low To High", "Price High to Low"];
   const priceRanges = [
@@ -119,6 +131,7 @@ const CategoryPage = () => {
   const handleSortChange = (sortValue) => {
     setSelectedSort(sortValue);
     setFilters((prev) => ({ ...prev, sort: sortValue }));
+    setCurrentPage(1); 
   };
 
   const handleMobileSortChange = (sortValue) => {
@@ -132,6 +145,7 @@ const CategoryPage = () => {
         ? prev.colors.filter((c) => c !== colorName)
         : [...prev.colors, colorName],
     }));
+    setCurrentPage(1); 
   };
 
   const handleSizeFilter = (size) => {
@@ -141,6 +155,7 @@ const CategoryPage = () => {
         ? prev.sizes.filter((s) => s !== size)
         : [...prev.sizes, size],
     }));
+    setCurrentPage(1); 
   };
 
   const handlePriceFilter = (priceRange) => {
@@ -149,10 +164,12 @@ const CategoryPage = () => {
       minPrice: priceRange.min,
       maxPrice: priceRange.max,
     }));
+    setCurrentPage(1); 
   };
 
   const clearPriceFilter = () => {
     setFilters((prev) => ({ ...prev, minPrice: null, maxPrice: null }));
+    setCurrentPage(1);
   };
 
   const clearAllFilters = () => {
@@ -164,6 +181,11 @@ const CategoryPage = () => {
       maxPrice: null,
     });
     setSelectedSort("Recommended");
+    setCurrentPage(1);
+  };
+
+  const handleLoadMore = () => {
+    setCurrentPage((prev) => prev + 1);
   };
 
   const [showLoader, setShowLoader] = useState(false);
@@ -178,20 +200,23 @@ const CategoryPage = () => {
       setShowLoader(true);
     } else {
       const timer = setTimeout(() => setShowLoader(false), 1000);
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer)
     }
   }, [isCategoryLoading, isFetching, isFilteredLoading, isFilteredFetching]);
 
   if (showLoader) {
-    return <CubLoader />;
+    return (
+      <>
+        <CubLoader />
+      </>
+    );
   }
 
   if (currentCategory && currentCategory.name === "Tommy Jeans") {
     return <Tommyjeans categoryId={categoryId} category={currentCategory} />;
   }
 
-  // Məhsul tapılmadıqda ErrorPage göstər
-  if (!showLoader && displayProducts && displayProducts.length === 0) {
+  if (!showLoader && allProducts && allProducts.length === 0) {
     return <ErrorPage />;
   }
 
@@ -210,9 +235,7 @@ const CategoryPage = () => {
         </div>
 
         <div className="flex justify-between items-center my-5 md:hidden">
-          <span className="text-sm text-[#464C52]">
-            {displayProducts?.length} items
-          </span>
+          <span className="text-sm text-[#464C52]">{totalItems} items</span>
           <div
             className="flex items-center gap-1 text-sm cursor-pointer"
             onClick={() => handleFilterClick(null)}
@@ -268,9 +291,7 @@ const CategoryPage = () => {
             </button>
           </div>
           <div className="flex justify-between items-center my-5">
-            <span className="text-sm text-[#464C52]">
-              {displayProducts?.length} Items
-            </span>
+            <span className="text-sm text-[#464C52]">{totalItems} Items</span>
             <div className="flex items-center gap-2 text-sm">
               <span className="text-sm text-[#464C52]">Sort By</span>
               <div className="relative">
@@ -359,13 +380,18 @@ const CategoryPage = () => {
 
       <div className="text-center my-10">
         <p className="text-sm text-[#1B1D1F] py-4">
-          Showing {displayProducts?.length} of{" "}
-          {allCategoryProducts?.length || 0} items
+          Showing {displayProducts?.length} of {totalItems} items
         </p>
-        <button className="border border-gray-300 rounded-sm w-[40%] lg:w-[30%] py-4 hover:underline hover:border-gray-800 inline-block">
-          Load More
-        </button>
+        {moreItems && (
+          <button
+            onClick={handleLoadMore}
+            className="border border-gray-300 rounded-sm w-[40%] lg:w-[30%] py-4 hover:underline hover:border-gray-800 inline-block"
+          >
+            Load More
+          </button>
+        )}
       </div>
+
       {showScrollTop && (
         <button
           onClick={scrollToTop}
@@ -373,8 +399,10 @@ const CategoryPage = () => {
           aria-label="Scroll to top"
         >
           <div className="text-sm font-medium ">
-            <span><ChevronUp/></span>
-            <span >Top</span>
+            <span>
+              <ChevronUp />
+            </span>
+            <span>Top</span>
           </div>
         </button>
       )}

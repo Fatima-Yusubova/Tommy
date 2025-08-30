@@ -1,29 +1,8 @@
 import React from 'react'
 import CollectionItems from './CollectionItems';
 import { Link } from 'react-router';
+import { collections } from '../../../../constant/constant';
 
-const collections = [
-  {
-    name: "The Polo Shop",
-    image: "/assets/img/ExpMore01.jpg",
-    link: "Shop Now",
-  },
-  {
-    name: "Tommy Jeans",
-    image: "/assets/img/ExpMore02.jpg",
-    link: "Shop Now",
-  },
-  {
-    name: "The Logo Shop",
-    image: "/assets/img/ExpMore03.jpg",
-    link: "Shop Now",
-  },
-  {
-    name: "Tommy Stories",
-    image: "/assets/img/ExpMore04.jpg",
-    link: "Learn More",
-  },
-];
 const Collections = () => {
   return (
     <div className="max-w-[95%] m-auto  mb-25 lg:mb-50">

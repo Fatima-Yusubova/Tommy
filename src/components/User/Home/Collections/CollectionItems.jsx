@@ -1,5 +1,4 @@
 import React from 'react'
-
 const CollectionItems = ({name ,image ,link}) => {
   return (
     <div className='flex flex-col w-full gap-3 '>

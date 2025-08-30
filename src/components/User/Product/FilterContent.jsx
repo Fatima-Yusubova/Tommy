@@ -70,8 +70,8 @@ const FilterContent = ({
                     <input
                       type="radio"
                       name="sort"
-                      checked={selectedSort === option} // Parent state-dən gəlir
-                      onChange={() => onSortChange(option)} // Parent handler
+                      checked={selectedSort === option} 
+                      onChange={() => onSortChange(option)} 
                       className="hidden peer"
                     />
                     <span className="w-5 h-5 rounded-full border border-gray-500 flex items-center justify-center">
@@ -127,7 +127,7 @@ const FilterContent = ({
               onClick={() => toggleSection("color")}
             >
               <h4>
-                Colors{" "}
+                Colors
                 {filters?.colors?.length > 0 && `(${filters.colors.length})`}
               </h4>
               <FaChevronDown
@@ -141,11 +141,7 @@ const FilterContent = ({
                 {Object.entries(colorMapping).map(([name, color], i) => (
                   <button
                     key={i}
-                    className={`flex items-center gap-2 p-2 rounded cursor-pointer select-none transition-all ${
-                      filters?.colors?.includes(name)
-                        ? "ring-2 ring-black bg-gray-50"
-                        : "hover:bg-gray-50"
-                    }`}
+                    className="flex items-center gap-2 p-2  cursor-pointer" 
                     onClick={() => handleColorFilter(name)}
                   >
                     <span
@@ -157,9 +153,6 @@ const FilterContent = ({
                       style={{ backgroundColor: color }}
                     ></span>
                     <span className="text-[#1B1D1F] text-sm">{name}</span>
-                    {filters?.colors?.includes(name) && (
-                      <span className="ml-auto text-black font-bold">✓</span>
-                    )}
                   </button>
                 ))}
               </div>
@@ -172,7 +165,7 @@ const FilterContent = ({
               onClick={() => toggleSection("price")}
             >
               <h4>
-                Price{" "}
+                Price
                 {(filters.minPrice !== null || filters.maxPrice !== null) &&
                   "(1)"}
               </h4>
